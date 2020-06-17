@@ -39,6 +39,7 @@ You can get `Rinkeby` `ETH` from the faucet. The faucet asks you to make a socia
 Link to `Rinkeby` `ETH` [faucet](https://faucet.rinkeby.io/).
 
 You can get `Rinkeby` `DAI` from [Compound's Rinkeby UI](https://app.compound.finance/).
+
 1. Visit the page and make sure you are logged in to `Metamask` and select the `Rinkeby Test Network` in `Metamask`.
 2. In the left `Supply` column click on `Dai`
 3. In the pop-up click on `Withdraw`
@@ -48,19 +49,22 @@ You can get `Rinkeby` `DAI` from [Compound's Rinkeby UI](https://app.compound.fi
 7. You should now have `100 Rinkeby Dai` from the `Compound Faucet`
 
 ## Clone this repo
+
 ```
 git clone https://github.com/gelatodigital/gelato-kyber.git
 
 cd gelato-kyber
 
 yarn install  # or npm install
+
+touch .env
 ```
 
 You will probably see some `gyp-error` depending on which version of `node` you use. Don't worry about it.
 
 ## Environment
 
-Add a `.env` file to the project root level with the following entries:
+Input the following entries into your `.env` file:
 
 **Make sure `.env` is in `.gitignore` !**
 
@@ -69,6 +73,8 @@ DEMO_INFURA_ID="<Put your Infura Project ID in here>"
 DEMO_USER_PK="<Put your First Private Key in here>"
 DEMO_PROVIDER_PK="<Put your Second Private Key in here>"
 ```
+
+Make sure your DEMO_USER_PK and DEMO_PROVIDER_PK are pre-fixed with `0x`.
 
 # GELATO DEMO: AUTOMATED KYBER
 
@@ -79,7 +85,9 @@ DEMO_PROVIDER_PK="<Put your Second Private Key in here>"
 ```
 yarn unprovide
 ```
+
 or
+
 ```
 npm run unprovide
 ```
@@ -98,33 +106,39 @@ The `Action` defines what Gelato should automate for your Users.
 The `Condition` defines when the `Action` should be performed.
 
 For this demo we will define them as such:
+
 - `Condition`: **Every 2 minutes**
 
 - `Action`: **Trade 10 DAI for KNC on KyberNetwork**
 
 A `Gelato Task` is just the combination of the `Condition` with the `Action`.
+
 - `Task`: **Every 2 minutes, trade 10 DAI for KNC on KyberNetwork**
 
-For this Demo we have completed Step1 for you and both the necessary Condition and Action smart contracts are deployed for you on Rinkeby. If you are a curious Solidity developer, you can check out their code here:
+For this Demo we have completed Step1 for you and both the necessary Condition and Action smart contracts are already deployed on Rinkeby. If you are a curious Solidity developer, you can check out their code here:
+
 - [`contracts/gelato_conditions/ConditionTimeStateful.sol`](https://github.com/gelatodigital/gelato-kyber/blob/master/contracts/gelato_conditions/ConditionTimeStateful.sol)
 - [`contracts/gelato_actions/ActionKyberTrade.sol`](https://github.com/gelatodigital/gelato-kyber/blob/master/contracts/gelato_actions/ActionKyberTrade.sol)
 
 #### Gelato Providers & Executors
+
 Gelato **automates `Task` execution** by incentivising a **network of relay servers** to **execute** them **for your Dapp Users**.
 
-These `Executors` need to be paid, in order to operate their automation infrastructure.
+These `Executors` need to be compensated for their work of submitting transactions on your Users behalf and in order to operate their automation infrastructure.
 
-In Gelato **`Providers` pay `Executors`** to **automate** their `Tasks`.
+On Gelato **`Providers` deposit ETH which is used to pay `Executors`** to **execute** the `Tasks` on the Users behalf.
 
 There are two kinds of `Providers`:
-1. `Provider`: pays `Executors` on behalf of his/her Dapp Users
-2. `Self-Provider`: a Dapp User that pays `Executors` himself/herself
 
-In this demo you will be a good `Provider` to your Users and pay the `Executors` yourself.
+1. `External Provider`: A third party which pays `Executors` on behalf of his/her Dapp Users
+2. `Self-Provider`: A Dapp User that pays `Executors` himself/herself directly
 
-However, you will make revenue from providing for your Users Task executions by taking a 10% share of their `DAI` (1 DAI) each time they automatically trade them for `KNC`.
+In this demo you will be an `External Provider` and pay the `Executors` yourself, so that your Users don't have to pre-deposit ETH on gelato themselves.
+
+However, you will make revenue from paying for your Users Tasks by taking a 10% share of their `DAI` (1 DAI) each time they automatically trade them for `KNC`.
 
 This is achieved with a special Gelato Action contract that was already deployed and setup for you for this demo. If you are curious, check out the contract here:
+
 - [`contracts/gelato_actions/ActionFeeHandler.sol`](https://github.com/gelatodigital/gelato-kyber/blob/master/contracts/gelato_actions/ActionFeeHandler.sol)
 
 In reality, you would probably take a much lower fee. The 10% is just for demonstration.
@@ -132,32 +146,40 @@ In reality, you would probably take a much lower fee. The 10% is just for demons
 :icecream: :icecream: :icecream:
 
 ### Step 2: Assign your Executor
-**Providers have to assign an `Executor` to their Users' `Tasks`**
+
+**Providers have to select & assign an `Executor` who will execute their Users' `Tasks`**
+
+You can switch executors at any point in time.
 
 You will select your `Executor` in **Step 6**.
 
 :icecream: :icecream: :icecream:
 
 ### Step 3: Provide Funds
-**Providers must lock funds inside Gelato, to pay for `Task` executions**
 
-You will lock up ETH inside Gelato in **Step 6**.
+**Providers must deposit ETH inside Gelato, to pay for the executions of their Users' `Tasks`**
+
+You will deposit ETH inside Gelato in **Step 6**.
 
 :icecream: :icecream: :icecream:
 
 ### Step 4: Whitelist Tasks
-**Providers must list the type of `Tasks` `Executors` should executor for them.**
 
-You will whitelist the **Kyber Automation Task** that is linked to your **FeeHandler**  `Action`, in **Step 6**.
+**Providers must whitelist the type of `Tasks` `Executors` should executor for them.**
+
+You will whitelist the **Kyber Automation Task** that is linked to your **FeeHandler** `Action`, in **Step 6**.
+
+Users can only use your deposited funds to pay for this particular task, no other one.
 
 :icecream: :icecream: :icecream:
 
 ### Step 5: Select a ProviderModule
+
 **Gelato requires Users to use Smart Contract `Proxies`.**
 
 `Providers` use `ProviderModule` smart contracts to specify the logic needed for their Users' `Proxies`.
 
-For this demo your Users will be using `GelatoUserProxies` on Gelato.
+For this demo your Users will be using `GelatoUserProxies` on Gelato. This module makes Gelato compatible with any proxy contract standard out there, such as e.g. Gnosis Safe.
 
 We already have a `GelatoUserProxy` `ProviderModule` deployed for you. Outside of this demo you should always vet that such a third-party module has immutable trust, or simply deploy your own `ProviderModule` that only you can mutate.
 
@@ -166,6 +188,7 @@ You will select this module in **Step 6**.
 :icecream: :icecream: :icecream:
 
 ### Step 6: Complete Steps 2-5 in one Transaction
+
 Run this demo script which will send a `transaction` to `Gelato` (on `Rinkeby`), that completes Steps 2-5 for you, using your `DEMO_PROVIDER_PK` as a `Wallet`. Make sure you have Rinkeby ETH on there.
 
 Watch your console for confirmation text and green ticks :white_check_mark:.
@@ -173,6 +196,7 @@ Watch your console for confirmation text and green ticks :white_check_mark:.
 If there are errors :x:, please open an Issue in this repo.
 
 If you use `yarn`:
+
 ```
 yarn provide
 ```
@@ -184,6 +208,7 @@ npm run provide
 ```
 
 If you are interested in the code that was run, take a peek at this script:
+
 - [`demo/Part-1_Gelato_Providers/step6-provide.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-1_Gelato_Providers/step6-provide.js)
 
 ### Demo Part 1 **END**
@@ -199,9 +224,11 @@ Onward to Demo Part 2, and buckle up for some Gelato magic :icecream:
 :icecream: :icecream: :icecream:
 
 ## Demo Part 2: Be your own Gelato-Kyber User
+
 In Part 2, we will take up the role of one of our own Dapp Users and see how Gelato works its automation magic for them in action.
 
 ### Step 1: Deploy your GelatoUserProxy
+
 **Your Gelato Dapp Users will submit their Tasks via their `GelatoUserProxies`**
 
 You will do this via the Command Line in **Step 2**.
@@ -209,11 +236,12 @@ You will do this via the Command Line in **Step 2**.
 :icecream: :icecream: :icecream:
 
 ### Step 2: Submit your Task to Gelato via your GelatoUserProxy
-We will submit our `Task` as a so-called `Task Cycle` of length 3 to Gelato, to limit the number of automatic trades we want to occur. Spelled out our `Task Cycle` will mean:
+
+Using Gelato, you can schedule Tasks that will only be executed once, but also others that will be executed forever, like in a cycle. We will submit our `Task` as a so-called `Task Cycle` of length 3 to Gelato, to limit the number of automatic trades we want to occur. Spelled out, our `Task Cycle` will mean:
 
 **For 3 times, every 2 minutes, trade 10 DAI for KNC on KyberNetwork**
 
-Due to the  `Provider fee payment` of **10% in DAI** that is part of our `Task` this will translate to **3 trades of 9 DAI to KNC** each, with **1 DAI flowing to our Provider from each trade**.
+Due to the `Provider fee payment` of **10% in DAI** that is part of our `Task` this will translate to **3 trades of 9 DAI to KNC** each, with **1 DAI flowing to our Provider from each trade**.
 
 Run this demo script which will send a `transaction` to `Gelato` (on `Rinkeby`) via your `GelatoUserProxy` that completes Steps 1 and 2 for you, using your `DEMO_USER_PK` as a `Wallet`. Make sure you have Rinkeby ETH on there.
 
@@ -231,17 +259,19 @@ Remember, all of this is on Rinkeby. So if you use Metamask, you need to add the
 `KNC=0x6FA355a7b6bD2D6bD8b927C489221BFBb6f1D7B2`
 
 If you use `yarn`:
+
 ```
-yarn submit-task-via-proxy
+yarn submit-task-via-userproxy
 ```
 
 If you use `npm`:
 
 ```
-npm run submit-task-via-proxy
+npm run submit-task-via-userproxy
 ```
 
 If you are interested in the code that was run, take a peek at this script:
+
 - [`demo/Part-2_Gelato_Users/step2-submitTaskViaProxy.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-2_Gelato_Users/step2-submitTaskViaProxy.js)
 
 **Wait for about 8 minutes for the script to complete.**
@@ -255,6 +285,7 @@ We should have observed in the running script output, or from our Metamask GUI, 
 We should have observed that our Provider Wallet's `DAI` balance went up by **1 `DAI`** for each of the 3 automated trades that occured - a total of `3 DAI` in fees.
 
 **If you are done with the Demo, you can cleanup after yourself and withdraw your Provider funds from Gelato back to your Provider Wallet by running this command**
+
 ```
 yarn unprovide
 ```

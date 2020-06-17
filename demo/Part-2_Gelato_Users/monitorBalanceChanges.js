@@ -2,7 +2,7 @@ import bre from "@nomiclabs/buidler";
 import { utils } from "ethers";
 
 // We expect 4 balance changes
-let balanceChangeCounter = 0;
+let balanceChangeCounter;
 
 let myUserWallet;
 let myUserAddress;

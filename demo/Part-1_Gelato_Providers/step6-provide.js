@@ -126,7 +126,12 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
       providerModuleGelatoUserProxyAddress
     );
 
+    const preProvisionBalance = await gelatoCore.providerFunds(
+      myProviderAddress
+    );
+
     // The single Transaction that completes Steps 2-5: gelatoCore.multiProvide()
+    let txSuccess = false;
     if (
       noFundsProvided ||
       noExecutorAssigned ||
@@ -145,6 +150,7 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
             gasPrice: utils.parseUnits("10", "gwei"),
           }
         );
+        txSuccess = true;
       } catch (error) {
         console.error("\n PRE provide TX error ❌  \n", error);
         process.exit(1);
@@ -159,12 +165,28 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
       }
     } else {
       console.log("\n Funds, TaskSpec and Module already provided ✅ \n");
+      if (assignedExecutor !== executorAddress)
+        try {
+          console.log(
+            "\n TaskSpec already provided, but wrong executor assigned"
+          );
+          await gelatoCore.providerAssignsExecutor(executorAddress);
+        } catch (error) {
+          console.log("Failed to Asssign new executor");
+        }
     }
 
     // Now we check that Steps 2-5 were completed successfully
-    expect(await gelatoCore.providerFunds(myProviderAddress)).to.be.equal(
-      providedFunds
-    );
+    if (txSuccess) {
+      expect(await gelatoCore.providerFunds(myProviderAddress)).to.be.equal(
+        providedFunds.add(preProvisionBalance)
+      );
+    } else {
+      expect(await gelatoCore.providerFunds(myProviderAddress)).to.be.equal(
+        preProvisionBalance
+      );
+    }
+
     expect(await gelatoCore.executorByProvider(myProviderAddress)).to.be.equal(
       executorAddress
     );
