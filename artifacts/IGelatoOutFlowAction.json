@@ -1,0 +1,41 @@
+{
+  "contractName": "IGelatoOutFlowAction",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "DATA_FLOW_OUT_TYPE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "_actionData",
+          "type": "bytes"
+        }
+      ],
+      "name": "execWithDataFlowOut",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "outFlowData",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
