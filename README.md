@@ -74,6 +74,8 @@ DEMO_USER_PK="<Put your First Private Key in here>"
 DEMO_PROVIDER_PK="<Put your Second Private Key in here>"
 ```
 
+Make sure your DEMO_USER_PK and DEMO_PROVIDER_PK are pre-fixed with `0x`.
+
 # GELATO DEMO: AUTOMATED KYBER
 
 **Follow the Steps of this walkthrough demo, to learn how you can use Gelato to build your Dapp that enables Users to `automatically trade ETH for KNC on KyberNetwork every X minutes/days/weeks`... .**
@@ -235,7 +237,7 @@ You will do this via the Command Line in **Step 2**.
 
 ### Step 2: Submit your Task to Gelato via your GelatoUserProxy
 
-We will submit our `Task` as a so-called `Task Cycle` of length 3 to Gelato, to limit the number of automatic trades we want to occur. Spelled out our `Task Cycle` will mean:
+Using Gelato, you can schedule Tasks that will only be executed once, but also others that will be executed forever, like in a cycle. We will submit our `Task` as a so-called `Task Cycle` of length 3 to Gelato, to limit the number of automatic trades we want to occur. Spelled out, our `Task Cycle` will mean:
 
 **For 3 times, every 2 minutes, trade 10 DAI for KNC on KyberNetwork**
 
@@ -259,13 +261,13 @@ Remember, all of this is on Rinkeby. So if you use Metamask, you need to add the
 If you use `yarn`:
 
 ```
-yarn submit-task-via-proxy
+yarn submit-task-via-userproxy
 ```
 
 If you use `npm`:
 
 ```
-npm run submit-task-via-proxy
+npm run submit-task-via-userproxy
 ```
 
 If you are interested in the code that was run, take a peek at this script:
