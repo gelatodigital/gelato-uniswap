@@ -126,6 +126,10 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
       providerModuleGelatoUserProxyAddress
     );
 
+    const preProvisionBalance = await gelatoCore.providerFunds(
+      myProviderAddress
+    );
+
     // The single Transaction that completes Steps 2-5: gelatoCore.multiProvide()
     if (
       noFundsProvided ||
@@ -163,7 +167,7 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
 
     // Now we check that Steps 2-5 were completed successfully
     expect(await gelatoCore.providerFunds(myProviderAddress)).to.be.equal(
-      providedFunds
+      providedFunds.add(preProvisionBalance)
     );
     expect(await gelatoCore.executorByProvider(myProviderAddress)).to.be.equal(
       executorAddress
