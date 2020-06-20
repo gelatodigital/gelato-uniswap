@@ -5,6 +5,7 @@ node_modules
 .env
 
 #buidler
+artifacts/
 cache/
 
 # macOS

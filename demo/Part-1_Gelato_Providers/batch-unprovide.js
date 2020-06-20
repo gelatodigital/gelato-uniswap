@@ -29,21 +29,38 @@ describe("Cleanup for Gelato-Kyber Demo Part 1: Step 6", function () {
     bre.network.config.deployments.ActionKyberTrade;
 
   // --> Scrap from Step 4:
+  const actionFeeHandlerAddress =
+    bre.network.config.deployments.ActionFeeHandler;
+  const actionFeeHandler = new Action({
+    addr: actionFeeHandlerAddress,
+    data: constants.HashZero, // The exact Action payload is ignored for whitelisting
+    operation: Operation.Delegatecall, // This Action must be executed via the UserProxy
+    dataFlow: DataFlow.Out, // Tell ActionKyberTrade how much DAI to sell after fee
+    termsOkCheck: true, // Some sanity checks have to pass before Execution is granted
+  });
   const kyberAction = new Action({
     addr: actionKyberTradeAddress, // The address of the contract with the Action logic
     data: constants.HashZero, // The exact Action payload is ignored for whitelisting
     operation: Operation.Delegatecall, // This Action must be executed via the UserProxy
+    dataFlow: DataFlow.In, // Expects DAI sell amount after fee from actionFeeHandler
     termsOkCheck: true, // Some sanity checks have to pass before Execution is granted
   });
   const updateConditionTimeAction = new Action({
     addr: conditionTimeStatefulAddress,
     data: constants.HashZero, // The exact Action payload is ignored for whitelisting
-    operation: Operation.Delegatecall, // This Action must be executed via the UserProxy
+    operation: Operation.Call, // This Action must be executed via the UserProxy
   });
+
+  // We also need to specify up to which gasPrice the Action should be executable
+  const gasPriceCeil = utils.parseUnits("50", "gwei");
+
+  // This is all the info we need for the TaskSpec whitelisting
   const gelatoKyberTaskSpec = new TaskSpec({
-    conditions: [conditionTimeStatefulAddress], // multiple conditions could be combined
-    actions: [kyberAction, updateConditionTimeAction], // multiple actions could be combined
-    gasPriceCeil: 1, // dummyValue
+    // All the conditions have to be met
+    conditions: [conditionTimeStatefulAddress],
+    // These Actions have to be executed in the same TX all-or-nothing
+    actions: [actionFeeHandler, kyberAction, updateConditionTimeAction],
+    gasPriceCeil,
   });
 
   // --> Scrap from tep 5: Select a ProviderModule

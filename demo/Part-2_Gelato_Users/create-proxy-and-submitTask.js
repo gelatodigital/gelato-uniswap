@@ -14,7 +14,6 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
 
   // We use our User Wallet. Per our config this wallet is at the accounts index 0
   // and hence will be used by default for all transactions we send.
-  let myUserWallet;
   let myUserAddress;
 
   // We also want to keep track of our Provider
@@ -63,22 +62,16 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
   // All these variables and constants will be used to create our Gelato Task object:
   let taskAutomateKyberTradeWithFee;
 
-  // We also want to keep track of token balances in our UserWallet
-  let myUserWalletETHBalance;
-  let myUserWalletDAIBalance;
-  let myUserWalletKNCBalance;
-
-  // We also monitor the DAI approval our GelatoUserProxy has from us
-  let myUserProxyDAIAllowance;
-
-  // We also want to track the Provider DAI Balance to check for Provider Fees
-  let myProvidersDAIBalance;
-
   // --> Step 2: Submit your Task to Gelato via your GelatoUserProxy
   before(async function () {
     // We get our User Wallet from the Buidler Runtime Env
-    myUserWallet = await bre.getUserWallet();
+    const myUserWallet = await bre.getUserWallet();
     myUserAddress = await myUserWallet.getAddress();
+
+    // We also want to track of our Provider
+    // We get our Provider Wallet from the Buidler Runtime Env
+    const myProviderWallet = await bre.getProviderWallet();
+    myProviderAddress = await myProviderWallet.getAddress();
 
     // --> Step 1: Deploy your GelatoUserProxy
     gelatoUserProxyFactory = await ethers.getContractAt(
@@ -185,42 +178,6 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
         actionUpdateConditionTime,
       ],
     });
-
-    // We also want to keep track of token balances in our UserWallet
-    myUserWalletETHBalance = await myUserWallet.getBalance();
-    myUserWalletDAIBalance = await bre.run("erc20-balance", {
-      erc20name: "DAI",
-      owner: myUserAddress,
-    });
-    myUserWalletKNCBalance = await bre.run("erc20-balance", {
-      erc20name: "KNC",
-      owner: myUserAddress,
-    });
-
-    // We also monitor the DAI approval our GelatoUserProxy has from us
-    myUserProxyDAIAllowance = await bre.run("erc20-allowance", {
-      owner: myUserAddress,
-      erc20name: "DAI",
-      spender: myUserProxyAddress,
-    });
-
-    // We also want to track the Provider DAI Balance to check for Provider Fees
-    // We get our Provider Wallet from the Buidler Runtime Env
-    const myProviderWallet = await bre.getProviderWallet();
-    myProviderAddress = await myProviderWallet.getAddress();
-    myProvidersDAIBalance = await bre.run("erc20-balance", {
-      owner: myProviderAddress,
-      erc20name: "DAI",
-    });
-
-    // Print this balance information to the screen
-    logBalances({
-      myUserWalletETHBalance,
-      myUserWalletDAIBalance,
-      myUserWalletKNCBalance,
-      myUserProxyDAIAllowance,
-      myProvidersDAIBalance,
-    });
   });
 
   // --> Step 2: Submit your Task to Gelato via your GelatoUserProxy
@@ -306,6 +263,12 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
       isTaskSpecProvided === "OK" &&
       userProxyModuleIsProvided
     ) {
+      // We also want to keep track of token balances in our UserWallet
+      const myUserWalletDAIBalance = await bre.run("erc20-balance", {
+        erc20name: "DAI",
+        owner: myUserAddress,
+      });
+
       // Since our Proxy will move a total of 30 DAI from our UserWallet to
       // trade them for KNC and pay the Provider fee, we need to make sure the we
       // have the DAI balance
@@ -315,6 +278,13 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
         );
         process.exit(1);
       }
+
+      // We also monitor the DAI approval our GelatoUserProxy has from us
+      const myUserProxyDAIAllowance = await bre.run("erc20-allowance", {
+        owner: myUserAddress,
+        erc20name: "DAI",
+        spender: myUserProxyAddress,
+      });
 
       // Since our Proxy will move a total of 30 DAI from our UserWallet to
       // trade them for KNC and pay the Provider fee, we need to make sure the we
@@ -429,37 +399,3 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
     }
   });
 });
-
-function logBalances({
-  myUserWalletETHBalance,
-  myUserWalletDAIBalance,
-  myUserWalletKNCBalance,
-  myUserProxyDAIAllowance,
-  myProvidersDAIBalance,
-}) {
-  const formatMyUserWalletETHBalance = utils
-    .formatEther(myUserWalletETHBalance)
-    .toString();
-  const formatMyUserWalletDAIBalance = utils
-    .formatEther(myUserWalletDAIBalance)
-    .toString();
-  const formatMyUserWalletKNCBalance = utils
-    .formatEther(myUserWalletKNCBalance)
-    .toString();
-  const formatMyUserProxyDAIAllowance = utils
-    .formatEther(myUserProxyDAIAllowance)
-    .toString();
-  const formatMyProvidersDAIBalance = utils
-    .formatEther(myProvidersDAIBalance)
-    .toString();
-
-  console.log(
-    `\n ___💰 Current Token BALANCES ____💰
-     \n myUserWallet ETH Balance: ${formatMyUserWalletETHBalance} ETH\n
-     \n myUserWalletDAIBalance:   ${formatMyUserWalletDAIBalance} DAI\n
-     \n myUserWalletKNCBalance:   ${formatMyUserWalletKNCBalance} KNC\n
-     \n myUserProxyDAIAllowance:  ${formatMyUserProxyDAIAllowance} DAI\n
-     \n myProvidersDAIBalance:    ${formatMyProvidersDAIBalance} DAI\n`
-  );
-}
-

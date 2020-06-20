@@ -6,10 +6,16 @@
   "author": "The legendary members of gelato-digital",
   "private": false,
   "scripts": {
-    "provide": "npx buidler test demo/Part-1_Gelato_Providers/step6-provide.js",
-    "unprovide": "npx buidler test demo/Part-1_Gelato_Providers/unprovide.js",
-    "submit-task-via-userproxy": "yarn submit-via-proxy && yarn monitor-balances",
-    "submit-via-proxy": "npx buidler test demo/Part-2_Gelato_Users/step2-submitTaskViaProxy.js",
+    "assign-executor": "npx buidler test demo/Part-1_Gelato_Providers/step2-assign-executor.js",
+    "provide-funds": "npx buidler test demo/Part-1_Gelato_Providers/step3-provide-funds.js",
+    "whitelist-task": "npx buidler test demo/Part-1_Gelato_Providers/step4-whitelist-task.js",
+    "add-provider-module": "npx buidler test demo/Part-1_Gelato_Providers/step5-add-provider-module.js",
+    "batch-provide": "npx buidler test demo/Part-1_Gelato_Providers/batch-provide.js",
+    "batch-unprovide": "npx buidler test demo/Part-1_Gelato_Providers/batch-unprovide.js",
+    "create-userproxy": "npx buidler test demo/Part-2_Gelato_Users/step1-create-user-proxy.js",
+    "submit-task-via-user-proxy-and-monitor": "yarn submit-task-via-user-proxy && yarn monitor-balances",
+    "submit-task-via-user-proxy": "npx buidler test demo/Part-2_Gelato_Users/step2-submit-task.js",
+    "create-userproxy-and-submit-task": "npx buidler test demo/Part-2_Gelato_Users/create-proxy-and-submitTask.js",
     "monitor-balances": "npx buidler run demo/Part-2_Gelato_Users/monitorBalanceChanges.js"
   },
   "devDependencies": {

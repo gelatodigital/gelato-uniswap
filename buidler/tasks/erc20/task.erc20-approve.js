@@ -29,11 +29,7 @@ export default task(
     `);
     }
     const txHash = await run("erc20:approve", taskArgs);
-    const etherscanLink = await run("get-etherscan-link", {
-      txhash: txHash,
-    });
     if (taskArgs.log) {
-      console.log(`Link to transaction: \n ${etherscanLink}\n`);
       console.log(`✅ Tx mined`);
     }
     return txHash;

@@ -74,8 +74,8 @@ module.exports = {
         // Kyber
         ActionKyberTrade: "0xe2B2f27D674F49fB3d67D6D21F5d85EFe2B95635",
         // Provider
-        // For this Demo we deployed a ActionFeeHandler with DAI whitelisted and 10% fee
-        ActionFeeHandler: "0x2bc656c46F332e85815CF20b529BAcDB3E13A19c",
+        // ❗  @DEMO STEP 1.1 DEPLOY - FEE - CONTRACT ❗
+        ActionFeeHandler: "", // <-- ADD YOUR DEPLOYED ActionFeeHandler address here!
         FeeHandlerFactory: "0x6988f5c52E0b6Bdcf6d0223e65a4C49F0c2cb1F8",
         // ==== Conditions ====
         // Time
@@ -91,7 +91,7 @@ module.exports = {
 
       // Rinkeby: Filters
       filters: {
-        defaultFromBlock: 6676958,
+        defaultFromBlock: 6699941,
         defaultToBlock: "latest",
       },
     },
@@ -184,7 +184,8 @@ require("./buidler/tasks/abi/collection.tasks.abi");
 require("./buidler/tasks/bre/collection.tasks.bre");
 
 // ======================== DEMO ======================================
-require("./demo/helpers/collection.tasks.demo.helpers.js");
+require("./demo/Part-1_Gelato_Providers/step1.1-deploy-fee-contract");
+require("./demo/Part-1_Gelato_Providers/step1.2-whitelist-fee-token");
 
 // ============== DEPLOY
 require("./buidler/tasks/deploy/collection.tasks.deploy");

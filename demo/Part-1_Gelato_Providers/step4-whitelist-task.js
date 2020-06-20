@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
+describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -20,7 +20,7 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
   const gelatoCoreAddress = bre.network.config.deployments.GelatoCore;
   let gelatoCore;
 
-  // --> Step 1: Conditions and Actions
+  // --> Conditions & Actions => Task (see Step1 of Demo)
   // 1) We use the already deployed instance of ConditionTimeStateful
   const conditionTimeStatefulAddress =
     bre.network.config.deployments.ConditionTimeStateful;
@@ -30,14 +30,6 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
   // 3) We use the already deployed instance of ActionKyberTrade
   const actionKyberTradeAddress =
     bre.network.config.deployments.ActionKyberTrade;
-
-  // --> Step 2: Assign your Executor
-  // We use Gelato's default Rinkeby Executor
-  const executorAddress = bre.network.config.addressBook.gelatoExecutor.default;
-
-  // --> Step 3: Provide Funds
-  // We provide 1 ETH to Gelato, so that many Task executions can happen
-  const providedFunds = utils.parseEther("1");
 
   // --> Step 4: Whitelist Tasks
   // For this we create a specific Gelato object called a TaskSpec
@@ -78,15 +70,6 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
     gasPriceCeil,
   });
 
-  // --> Step 5: Select a ProviderModule
-  // For the demo we use the already deployed GelatoUserProxy ProviderModule
-  // as Gelato automation requires our Users to have Smart Contract Proxies.
-  // However, outside of the demo you should always make sure you deploy your own
-  // ProviderModule, or at least use one that has immutable trust.
-  const providerModuleGelatoUserProxyAddress =
-    bre.network.config.deployments.ProviderModuleGelatoUserProxy;
-
-  // --> Step 6: Complete Steps 2-5 in one Transaction
   before(async function () {
     // We get our Provider Wallet from the Buidler Runtime Env
     myProviderWallet = await bre.getProviderWallet();
@@ -100,20 +83,8 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
     );
   });
 
-  // Complete Steps 2-5 in one Transaction
-  it("I, as the Gelato Provider, successfully completed demo Steps 2-5", async function () {
-    // First we need to make sure that we have not already completed any of
-    // Steps 2-5 before, lest we get a reverting transaction
-    const providerFunds = await gelatoCore.providerFunds(myProviderAddress);
-    const noFundsProvided = providerFunds.toString() === "0" ? true : false;
-    const assignedExecutor = await gelatoCore.executorByProvider(
-      myProviderAddress
-    );
-    const noExecutorAssigned =
-      assignedExecutor === constants.AddressZero ? true : false;
-    // Make sure executorAddress is minStaked
-    if (noExecutorAssigned)
-      expect(await gelatoCore.isExecutorMinStaked(executorAddress)).to.be.true;
+  it("Transaction to whitelist Demo Task", async function () {
+    // First we want to make sure that we havent already provided the TaskSpec
     const taskSpecIsNotProvided =
       (await gelatoCore.isTaskSpecProvided(
         myProviderAddress,
@@ -121,64 +92,40 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
       )) === "TaskSpecNotProvided"
         ? true
         : false;
-    const moduleIsProvided = await gelatoCore.isModuleProvided(
-      myProviderAddress,
-      providerModuleGelatoUserProxyAddress
-    );
 
-    // The single Transaction that completes Steps 2-5: gelatoCore.multiProvide()
-    if (
-      noFundsProvided ||
-      noExecutorAssigned ||
-      taskSpecIsNotProvided ||
-      !moduleIsProvided
-    ) {
-      let multiProvideTx;
+    // Transaction
+    if (taskSpecIsNotProvided) {
+      let provideTaskSpec;
       try {
-        multiProvideTx = await gelatoCore.multiProvide(
-          noExecutorAssigned ? executorAddress : constants.AddressZero,
-          taskSpecIsNotProvided ? [gelatoKyberTaskSpec] : [],
-          !moduleIsProvided ? [providerModuleGelatoUserProxyAddress] : [],
+        provideTaskSpec = await gelatoCore.provideTaskSpecs(
+          [gelatoKyberTaskSpec],
           {
-            value: noFundsProvided ? providedFunds : constants.Zero,
             gasLimit: 6000000,
             gasPrice: utils.parseUnits("10", "gwei"),
           }
         );
       } catch (error) {
-        console.error("\n PRE provide TX error ❌  \n", error);
+        console.error("\n PRE provideTaskSpecs TX error ❌  \n", error);
         process.exit(1);
       }
       try {
-        console.log("\n Waiting for provide TX to get mined...");
-        await multiProvideTx.wait();
-        console.log("Provide TX mined and ok ✅ \n");
+        console.log("\n Waiting for provideTaskSpecs TX to get mined...");
+        await provideTaskSpec.wait();
+        console.log("provideTaskSpecs TX mined and ok ✅ \n");
       } catch (error) {
-        console.error("\n Provide TX error ❌ ", error);
+        console.error("\n provideTaskSpecs TX error ❌ ", error);
         process.exit(1);
       }
     } else {
-      console.log("\n Funds, TaskSpec and Module already provided ✅ \n");
+      console.log("\n TaskSpec already provided ✅ \n");
     }
 
-    // Now we check that Steps 2-5 were completed successfully
-    expect(await gelatoCore.providerFunds(myProviderAddress)).to.be.equal(
-      providedFunds
-    );
-    expect(await gelatoCore.executorByProvider(myProviderAddress)).to.be.equal(
-      executorAddress
-    );
+    // Making sure the TaskSpec was provided
     expect(
       await gelatoCore.isTaskSpecProvided(
         myProviderAddress,
         gelatoKyberTaskSpec
       )
     ).to.be.equal("OK");
-    expect(
-      await gelatoCore.isModuleProvided(
-        myProviderAddress,
-        providerModuleGelatoUserProxyAddress
-      )
-    ).to.be.true;
   });
 });
