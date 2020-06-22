@@ -56,7 +56,6 @@ cd gelato-kyber
 
 yarn install  # or npm install
 
-npx buidler compile
 ```
 
 You will probably see some `gyp-error` depending on which version of `node` you use. Don't worry about it.
@@ -84,6 +83,12 @@ DEMO_PROVIDER_PK="<Put your Second Private Key in here>"
 :exclamation: **Make sure your Private Keys are prefixed with `0x`**
 
 This will allow the scripts that you will later run in this demo, to use your `Provider` and your `User` Wallets.
+
+In order to run the following scripts, you must first compile the smart contracts. Run:
+
+```
+npx buidler compile
+```
 
 # GELATO DEMO: AUTOMATED KYBER
 
