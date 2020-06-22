@@ -84,6 +84,12 @@ DEMO_PROVIDER_PK="<Put your Second Private Key in here>"
 
 This will allow the scripts that you will later run in this demo, to use your `Provider` and your `User` Wallets.
 
+In order to run the following scripts, you must first compile the smart contracts. Run:
+
+```
+npx buidler compile
+```
+
 # GELATO DEMO: AUTOMATED KYBER
 
 **Follow the Steps of this walkthrough demo, to learn how you can use Gelato to build your Dapp that enables Users to `automatically trade ETH for KNC on KyberNetwork every X minutes/days/weeks`... .**
