@@ -121,7 +121,7 @@ Here, we define our `Task` like so:
 
 - `Task`: **Every 2 minutes, trade 10 DAI for KNC on KyberNetwork**
 
-For this Demo we have completed part of Step1 for you: both the necessary Condition and Action smart contracts have already been written and deployed to Rinkeby for you. If you are a curious Solidity developer, you can check out their code here:
+For this Demo, both the necessary Condition and Action smart contracts have already been written and deployed to Rinkeby for you. If you are a curious Solidity developer, you can check out their code here:
 
 - [`contracts/gelato_conditions/ConditionTimeStateful.sol`](https://github.com/gelatodigital/gelato-kyber/blob/master/contracts/gelato_conditions/ConditionTimeStateful.sol)
 - [`contracts/gelato_actions/ActionKyberTrade.sol`](https://github.com/gelatodigital/gelato-kyber/blob/master/contracts/gelato_actions/ActionKyberTrade.sol)
