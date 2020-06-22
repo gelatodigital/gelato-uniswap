@@ -43,15 +43,21 @@ describe("Gelato-Kyber Demo Part 1: Step 2 => Executor Assignment", function () 
     const assignedExecutor = await gelatoCore.executorByProvider(
       myProviderAddress
     );
-    const noExecutorAssigned =
-      assignedExecutor === constants.AddressZero ? true : false;
 
     // The single Transaction that completes Steps 2-5: gelatoCore.multiProvide()
-    if (noExecutorAssigned) {
+    if (
+      ethers.utils.getAddress(assignedExecutor) !==
+      ethers.utils.getAddress(gelatoDefaultExecutor)
+    ) {
       // Gelato requires Executors to be staked.
       expect(await gelatoCore.isExecutorMinStaked(gelatoDefaultExecutor)).to.be
         .true;
 
+      if (assignedExecutor !== constants.AddressZero) {
+        console.log(
+          `\n Re-assign executor:${assignedExecutor} to gelato default executor\n`
+        );
+      }
       // Now we can safely send the assignment transaction.
       let assignExecutorTx;
       try {
@@ -75,7 +81,7 @@ describe("Gelato-Kyber Demo Part 1: Step 2 => Executor Assignment", function () 
         process.exit(1);
       }
     } else {
-      console.log("\n Already assigned Executor ✅ \n");
+      console.log("\n Already assigned gelato default Executor ✅\n");
     }
 
     // Lastly we check that Steps 2-5 were completed successfully

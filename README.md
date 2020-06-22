@@ -56,7 +56,6 @@ cd gelato-kyber
 
 yarn install  # or npm install
 
-npx buidler compile
 ```
 
 You will probably see some `gyp-error` depending on which version of `node` you use. Don't worry about it.

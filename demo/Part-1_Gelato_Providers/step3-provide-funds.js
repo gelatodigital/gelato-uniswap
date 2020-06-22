@@ -28,12 +28,20 @@ describe("Gelato-Kyber Demo Part 1: Step 3 => Provide Funds", function () {
     // We get our Provider Wallet from the Buidler Runtime Env
     myProviderWallet = await bre.getProviderWallet();
     myProviderAddress = await myProviderWallet.getAddress();
+    const providerBalance = await myProviderWallet.getBalance();
 
-    if ((await myProviderWallet.getBalance()) < fundsToProvide) {
-      console.log("\n ❌  Insufficient funds on your Provider Wallet \n");
+    if (providerBalance.lt(fundsToProvide)) {
+      console.log(
+        `\n ❌  Insufficient funds on your Provider Wallet: ${myProviderAddress} \n`
+      );
       console.log(
         "\n Funds needed: ",
         utils.formatEther(fundsToProvide).toString(),
+        " ETH"
+      );
+      console.log(
+        "\n Provider's current Balance: ",
+        utils.formatEther(providerBalance).toString(),
         " ETH"
       );
       process.exit(1);
