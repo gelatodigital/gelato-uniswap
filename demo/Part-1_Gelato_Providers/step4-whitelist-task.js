@@ -59,7 +59,7 @@ describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
   });
 
   // We also need to specify up to which gasPrice the Action should be executable
-  const gasPriceCeil = utils.parseUnits("50", "gwei");
+  const gasPriceCeil = constants.MaxUint256;
 
   // This is all the info we need for the TaskSpec whitelisting
   const gelatoKyberTaskSpec = new TaskSpec({
@@ -93,8 +93,13 @@ describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
         ? true
         : false;
 
+    const currentGasPriceCeil = await gelatoCore.taskSpecGasPriceCeil(
+      myProviderAddress,
+      await gelatoCore.hashTaskSpec(gelatoKyberTaskSpec)
+    );
+
     // Transaction
-    if (taskSpecIsNotProvided) {
+    if (taskSpecIsNotProvided || !currentGasPriceCeil.eq(gasPriceCeil)) {
       let provideTaskSpec;
       try {
         provideTaskSpec = await gelatoCore.provideTaskSpecs(
@@ -127,5 +132,12 @@ describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
         gelatoKyberTaskSpec
       )
     ).to.be.equal("OK");
+
+    expect(
+      await gelatoCore.taskSpecGasPriceCeil(
+        myProviderAddress,
+        await gelatoCore.hashTaskSpec(gelatoKyberTaskSpec)
+      )
+    ).to.be.equal(gasPriceCeil);
   });
 });
