@@ -117,9 +117,9 @@ Here, we define our `Task` like so:
 
 - `Condition`: **Every 2 minutes**
 
-- `Action`: **Trade 10 DAI for KNC on KyberNetwork**
+- `Action`: **Trade 1 DAI for KNC on KyberNetwork**
 
-- `Task`: **Every 2 minutes, trade 10 DAI for KNC on KyberNetwork**
+- `Task`: **Every 2 minutes, trade 1 DAI for KNC on KyberNetwork**
 
 For this Demo, both the necessary Condition and Action smart contracts have already been written and deployed to Rinkeby for you. If you are a curious Solidity developer, you can check out their code here:
 
@@ -141,7 +141,7 @@ There are two kinds of `Providers`:
 
 In this demo you will be a `Provider` that pays `Executors` on behalf of Users.
 
-However, you will make revenue from providing for your Users Task executions by taking a 10% share of their `DAI` (1 DAI) each time they automatically trade them for `KNC`.
+However, you will make revenue from providing for your Users Task executions by taking a 10% share of their `DAI` (0.1 DAI) each time they automatically trade them for `KNC`.
 
 This is achieved with a special Gelato Action contract that you will now **deploy** and **configure** to take **10% of DAI as a fee**. This fee will automatically sent to your `Provider` account for every one of your Users' automatic trades. If you are curious, check out your Provider Fee contract here:
 
@@ -286,7 +286,7 @@ You can check out the script here:
 We have now completed all the chores, in order for our automated Gelato-Kyber Dapp users, to be able to submit their `Tasks`. Remember:
 
 - You will pay the `Task` `Executor` that you assigned in `Step 2` on your Users behalves with the funds that you provided to Gelato in `Step 3`.
-- In return, you will take a 10% DAI fee (1 DAI per trade) from your Users, as you configured in `Step 1` and `Step4`.
+- In return, you will take a 10% DAI fee (0.1 DAI per trade) from your Users, as you configured in `Step 1` and `Step4`.
 
 By the way, you can also complete Steps 2-5 in a single Transaction via this command:
 
@@ -342,11 +342,11 @@ npm run add-provider-module
 
 The script we will run submits our `Task` with a limit of three executions to Gelato, to limit the number of automatic trades we want to occur. Spelled out this will mean:
 
-**For 3 times, every 2 minutes, trade 10 DAI for KNC on KyberNetwork**
+**For 3 times, every 2 minutes, trade 1 DAI for KNC on KyberNetwork**
 
-Due to the `Provider fee payment` of **10% in DAI** that is part of our `Task` this will translate into **3 trades of 9 DAI to KNC** each, with **1 DAI flowing to our Provider from each trade**.
+Due to the `Provider fee payment` of **10% in DAI** that is part of our `Task` this will translate into **3 trades of 0.9 DAI to KNC** each, with **0.1 DAI flowing to our Provider from each trade**.
 
-**The script will also `approve` your `GelatoUserProxy` for `30 DAI` from your UserWallet. Your `Proxy` needs access to any funds needed for your Task, so that it can execute it on your behalf**
+**The script will also `approve` your `GelatoUserProxy` for `3 DAI` from your UserWallet. Your `Proxy` needs access to any funds needed for your Task, so that it can execute it on your behalf**
 
 **The script will keep on running listenting for events and printing information to the console as soon as an automatic trade was detected.**
 

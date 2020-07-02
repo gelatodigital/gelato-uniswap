@@ -46,7 +46,7 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task via UserProxy", functi
   let actionFeeHandler; // contract instance
   let actionPayProvider10percentOfDai; // gelato Action obj
   const DAI = bre.network.config.addressBook.erc20.DAI;
-  const DAI_AMOUNT_PER_TRADE = utils.parseUnits("10", 18);
+  const DAI_AMOUNT_PER_TRADE = utils.parseUnits("1", 18);
 
   // 3) We use the already deployed instance of ActionKyberTrade
   const actionKyberTradeAddress =
@@ -127,7 +127,7 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task via UserProxy", functi
       addr: actionFeeHandlerAddress,
       data: await actionFeeHandler.getActionData(
         DAI, // sendToken
-        DAI_AMOUNT_PER_TRADE, // sendAmount (10 DAI)
+        DAI_AMOUNT_PER_TRADE, // sendAmount (1 DAI)
         myUserAddress // feePayer
       ),
       operation: Operation.Delegatecall, // This Action must be executed via the UserProxy
@@ -146,7 +146,7 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task via UserProxy", functi
       data: await actionKyberTrade.getActionData(
         myUserAddress, // origin
         DAI, // sendToken
-        DAI_AMOUNT_PER_TRADE, // sendAmount (10 DAI)
+        DAI_AMOUNT_PER_TRADE, // sendAmount (1 DAI)
         KNC, // receiveToken
         myUserAddress // receiver
       ),
@@ -269,12 +269,12 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task via UserProxy", functi
         owner: myUserAddress,
       });
 
-      // Since our Proxy will move a total of 30 DAI from our UserWallet to
+      // Since our Proxy will move a total of 3 DAI from our UserWallet to
       // trade them for KNC and pay the Provider fee, we need to make sure the we
       // have the DAI balance
-      if (!myUserWalletDAIBalance.gte(30)) {
+      if (!myUserWalletDAIBalance.gte(3)) {
         console.log(
-          "\n ❌ Ooops! You need at least 30 DAI in your UserWallet \n"
+          "\n ❌ Ooops! You need at least 3 DAI in your UserWallet \n"
         );
         process.exit(1);
       }
@@ -286,21 +286,21 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task via UserProxy", functi
         spender: myUserProxyAddress,
       });
 
-      // Since our Proxy will move a total of 30 DAI from our UserWallet to
+      // Since our Proxy will move a total of 3 DAI from our UserWallet to
       // trade them for KNC and pay the Provider fee, we need to make sure the we
       // that we have approved our UserProxy. We can already approve it before
       // we have even deployed it, due to create2 address prediction magic.
-      if (!myUserProxyDAIAllowance.gte(utils.parseUnits("30", 18))) {
+      if (!myUserProxyDAIAllowance.gte(utils.parseUnits("3", 18))) {
         try {
           console.log("\n Sending Transaction to approve UserProxy for DAI.");
           console.log("Waiting for DAI Approval Tx to be mined....");
           await bre.run("erc20-approve", {
             erc20name: "DAI",
-            amount: utils.parseUnits("30", 18).toString(),
+            amount: utils.parseUnits("3", 18).toString(),
             spender: myUserProxyAddress,
           });
           console.log(
-            "Gelato User Proxy now has your Approval to move 30 DAI  ✅ \n"
+            "Gelato User Proxy now has your Approval to move 3 DAI  ✅ \n"
           );
         } catch (error) {
           console.error("\n UserProxy DAI Approval failed ❌  \n", error);
@@ -308,7 +308,7 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task via UserProxy", functi
         }
       } else {
         console.log(
-          "Gelato User Proxy already has your Approval to move 30 DAI  ✅ \n"
+          "Gelato User Proxy already has your Approval to move 3 DAI  ✅ \n"
         );
       }
 
