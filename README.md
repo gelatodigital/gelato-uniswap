@@ -8,20 +8,20 @@
   - [Clone this repo](#clone-this-repo)
   - [Environment](#environment)
 
-- [Tutorial](#gelato-demo-automated-kyber)
+- [Tutorial](#tutorial)
 
   - [Part 1: You become a Gelato Provider](#demo-part-1-you-become-a-gelato-provider)
 
-    - [Step 1: Gelato Conditions, Actions, and Tasks](#step-1-gelato-conditions-actions-and-tasks)
+    - [Step 1: Setting up the Fee Logic](#step-1-setting-up-the-fee-logic)
       - [Gelato Providers & Executors](#gelato-providers--executors)
     - [Step 2: Assign your Executor](#step-2-assign-your-executor)
-    - [Step 3: Provide Funds](#step-3-provide-funds)
-    - [Step 4: Whitelist Tasks](#step-4-whitelist-tasks)
+    - [Step 3: Deposit Funds on Gelato](#step-3-deposit-funds-on-gelato)
+    - [Step 4: Whitelist the Task Spec](#step-4-whitelist-the-task-spec)
     - [Step 5: Add a ProviderModule](#step-5-add-a-providermodule)
 
-  - [Part 2: Be your own Gelato-Kyber User](#demo-part-2-be-your-own-gelato-kyber-user)
-    - [Step 1: Deploy your GelatoUserProxy](#step-1-deploy-your-gelatouserproxy)
-    - [Step 2: Submit your Task to Gelato via your GelatoUserProxy](#step-2-submit-your-task-to-gelato-via-your-gelatouserproxy)
+  - [Part 2: Be your own Gelato-Kyber User](#demo-part-2-let-a-user-interact-with-your-automated-trading-dapp)
+    - [Step 1: Deploy your GelatoUserProxy](#step-1-create-your-gelatoUserProxy)
+    - [Step 2: Submit your Task to Gelato via your GelatoUserProxy](#step-2-user-submits-a-task-to-gelato-via-his-gelatoUserProxy)
 
 - [Build your own use case](#build-your-own-use-case-using-gelato)
 
@@ -229,7 +229,7 @@ You can check out the script here:
 
 You can always withdraw the funds from Gelato at any time (by running `yarn batch-unprovide`).
 
-### Step 4: Whitelist Task Specs
+### Step 4: Whitelist the Task Spec
 
 Providers must list the type of `Tasks` that they pay `Exectuors` for. As a `Provider` you want to make sure that your Users can only submit the type of `Task` that you have preapproved, so that you, for example, make sure that the `Task` has your fee mechanism encoded into it. This blueprint of a `Task` is called a `TaskSpec`.
 
@@ -302,7 +302,7 @@ If you are interested in the code, take a peek at this script:
 
 Onward to Demo Part 2, and buckle up for some Gelato magic :icecream:
 
-## Demo Part 2: Start using the automated trading dapp as a User
+## Demo Part 2: Let a User interact with your automated trading dapp
 
 In Part 2, we will take up the role of one of our own Dapp Users and see how Gelato works its automation magic for them in action.
 
