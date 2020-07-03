@@ -42,9 +42,11 @@ If you don't have 2 Private Keys you can use ready, the easiest way is to take t
 
 You can get `Rinkeby` `ETH` from the faucet. The faucet asks you to make a social media post with the `account` `address` (as displayed in `Metamask`) corresponding to the Private Keys. DO NOT SHARE THE PRIVATE KEYS THEMSELVES EVER!
 
+Deposit at least 2.5 ETH to the account of the DEMO_PROVIDER_PK and at least 0.5 ETH to the account of DEMO_USER_PK
+
 Link to `Rinkeby` `ETH` [faucet](https://faucet.rinkeby.io/).
 
-You can get `Rinkeby` `DAI` from [Compound's Rinkeby UI](https://app.compound.finance/).
+You can get `Rinkeby` `DAI` from [Compound's Rinkeby UI](https://app.compound.finance/). Deposit at least 3 DAI to the account of the DEMO_USER_PK
 
 1. Visit the page and make sure you are logged in to `Metamask` and select the `Rinkeby Test Network` in `Metamask`.
 2. In the left `Supply` column click on `Dai`
@@ -207,9 +209,9 @@ You can check out the script here
 
 Providers must lock funds inside Gelato, to pay for their Users' `Task` executions.
 
-Run this script to lock up `1 ETH` inside Gelato.
+Run this script to lock up `2 ETH` inside Gelato.
 
-Before, make sure you have `1 ETH` on your Rinkeby `Provider` account.
+Before, make sure you have `2 ETH` on your Rinkeby `Provider` account.
 
 ```
 yarn provide-funds

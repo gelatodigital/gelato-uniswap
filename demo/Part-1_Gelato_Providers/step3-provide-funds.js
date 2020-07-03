@@ -21,8 +21,8 @@ describe("Gelato-Kyber Demo Part 1: Step 3 => Provide Funds", function () {
   let gelatoCore;
 
   // --> Step 3: Provide Funds
-  // We provide 1 ETH to Gelato, so that many Task executions can happen
-  const fundsToProvide = utils.parseEther("1");
+  // We provide 2 ETH to Gelato, so that many Task executions can happen
+  const fundsToProvide = utils.parseEther("2");
 
   before(async function () {
     // We get our Provider Wallet from the Buidler Runtime Env
