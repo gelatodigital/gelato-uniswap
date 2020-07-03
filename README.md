@@ -138,9 +138,9 @@ Gelato consists of a **network of relay servers** that are being incentivized to
 
 These `Executors` need to be paid, in order to operate their automation infrastructure and get compensated for submitting transactions.
 
-In Gelato **`Providers` pay `Executors`** to **automate** `Tasks`.
+On Gelato **`GelatoProviders`** deposit ETH to pay **`Executors`** to **automate** certain`Tasks` by submitting transactions when certain conditions are met.
 
-There are two kinds of `Providers`:
+There are two kinds of `Gelato Providers`:
 
 1. `External Providers`, which pay `Executors` on behalf of his/her Dapp Users. These are dapp developers that want to provide users with a great UX by removing the necessity of depositing ETH on gelato from them.
 2. `Self-Provider`, which are End-Users that pa `Executors` directly, and thus have to deposit on gelato before being able to use it.
@@ -149,7 +149,7 @@ In this demo you will be an `External Provider` that pays `Executors` on behalf 
 
 However, you will be compensated for paying your Users transactions, by taking a 10% share of their `DAI` (0.1 DAI) each time they automatically trade them for `KNC`.
 
-This is achieved with a special Gelato Action contract that you will now **deploy** and **configure** to take **10% of DAI as a fee**. This fee will automatically be sent to your `Provider` account for every one of your Users' automatic trades. If you are curious, check out your Provider Fee contract here:
+This is achieved with a special Gelato Action contract that you will now **deploy** and **configure** to take **10% of DAI as a fee**. This fee will automatically be sent to your `Gelato Provider` account for every one of your Users' automatic trades. If you are curious, check out your Provider Fee contract here:
 
 - [`contracts/gelato_actions/ActionFeeHandler.sol`](https://github.com/gelatodigital/gelato-kyber/blob/master/contracts/gelato_actions/ActionFeeHandler.sol)
 
@@ -167,7 +167,7 @@ You can check out the script here
 
 **Make sure to copy & paste the `address` of your deployed `ActionFeeHandler` into this project's `buidler.config.js` file under `deployments.ActionFeeHandler`. You will find a comment in the file to guide you.**
 
-Lastly, we want our **Provider fee to be paid in `DAI`**. So we have to configure our fee contract by running this command:
+Lastly, we want our **Gelato Provider fee to be paid in `DAI`**. So we have to configure our fee contract by running this command:
 
 ```
 npx buidler whitelist-fee-token 0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa
@@ -181,11 +181,11 @@ You can check out the script here
 
 ### Step 2: Assign your Executor
 
-`Providers` have to assign an `Executor` to their Users' `Tasks`.
+`Gealto Providers` have to assign an `Executor` to their Users' `Tasks`.
 
 This `Executor` could be a single entity running a node, or it could be a smart contract that runs a `decentralized execution market`, which incentivises a multitude of independent actors to run `Gelato execution nodes`, thus avoiding a `single-point-of-failure`.
 
-`Providers` can `reassign` new `Executors` at any time.
+`Gelato Providers` can `reassign` new `Executors` at any time.
 
 In this demo, you will assign **Gelato's Default Executor** to your Users' tasks.
 
@@ -207,7 +207,7 @@ You can check out the script here
 
 ### Step 3: Deposit Funds on Gelato
 
-Providers must lock funds inside Gelato, to pay for their Users' `Task` executions.
+Gelato Providers must lock funds inside Gelato, to pay for their Users' `Task` executions.
 
 Run this script to lock up `2 ETH` inside Gelato.
 
@@ -302,23 +302,17 @@ If you are interested in the code, take a peek at this script:
 
 Onward to Demo Part 2, and buckle up for some Gelato magic :icecream:
 
-:icecream: :icecream: :icecream:
-:icecream: :icecream: :icecream:
-
-:icecream: :icecream: :icecream:
-:icecream: :icecream: :icecream:
-
 ## Demo Part 2: Start using the automated trading dapp as a User
 
 In Part 2, we will take up the role of one of our own Dapp Users and see how Gelato works its automation magic for them in action.
 
-The scripts will be using your `DEMO_USER_PK` as a `Wallet`. Make sure you have Rinkeby ETH on there.
+The scripts will be using your `DEMO_USER_PK` as a `Wallet`. Make sure you have Rinkeby ETH and DAI on there.
 
 ### Step 1: Create your GelatoUserProxy
 
-As a Gelato Dapp User, you submit your Task via a your Smart Contract Account or `Proxy`. In this demo, our `Provider` has specified in Part 1 Step 5 that this should be a `GelatoUserProxy`.
+A Gelato Dapp User should always submit a Task via a Smart Contract Account or `Proxy`. In this demo, we (the `Provider`) have specified in Part 1 Step 5 that this should be a `GelatoUserProxy`.
 
-Run this to create your `GelatoUserProxy`:
+Run this to create a `GelatoUserProxy` for the User:
 
 ```
 yarn create-userproxy
@@ -332,21 +326,19 @@ npm run add-provider-module
 
 - [`demo/Part-2_Gelato_Users/step1-create-user-proxy.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-2_Gelato_Users/step1-create-user-proxy.js)
 
-:icecream: :icecream: :icecream:
+### Step 2: User submits a Task to Gelato via his GelatoUserProxy
 
-### Step 2: Submit your Task to Gelato via your GelatoUserProxy
+In this example, the user wants to instruct Gelato to execute 3 trades in total on his behalf, each swapping 1 DAI to KNC after a certain time has passed.
 
-In this example, the user wants to instruct Gelato to execute 3 trades in total on its behalf, each swapping 1 DAI to KNC after a certain time has passed.
-
-The script we will run submits our `Task` to gelato. We are setting a limit of three executions to Gelato, to limit the number of automatic trades we want to occur. We could potentially also instruct gelato to submit inifinite tasks until the provider's ETH balance runs out.
+The script below will submit the `Task` to Gelato. The User is setting a limit of three executions, to limit the number of automatic trades that will occur. User's could potentially also instruct gelato to submit inifinite tasks until the provider's ETH balance or the users DAI balance runs out.
 
 Spelled out this will mean:
 
 **For 3 times, every 2 minutes, trade 1 DAI for KNC on KyberNetwork**
 
-Due to the `Provider fee payment` of **10% in DAI** that is part of our `Task` this will translate into **3 trades of 0.9 DAI to KNC** each, with **0.1 DAI flowing to our Provider from each trade**.
+Due to the `Gelato Provider fee payment` of **10% in DAI** that is part of the User's `Task` this will translate into **3 trades of 0.9 DAI to KNC** each, with **0.1 DAI flowing to our External Provider from each trade**.
 
-The script will also `approve` your `GelatoUserProxy` for `3 DAI` from your UserWallet. Your `Proxy` needs access to any funds needed for your Task, so that it can execute it on your behalf. This means that the DAI will remain in the Users Wallet until the condition os fulfilled and the User's proxy withdraws them out in order to trade on the Users behalf.
+The script will also `approve` the User's `GelatoUserProxy` for `3 DAI` from the UserWallet. The User's `Proxy` needs access to any funds needed for the Task, so that it can execute it on the User's behalf. This means that the DAI will remain in the Users Wallet until the condition is fulfilled and the User's proxy withdraws them out in order to trade on the Users behalf.
 
 The script will keep on running listenting for events and printing information to the console as soon as an automatic trade was detected.
 
