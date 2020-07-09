@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
+describe("Gelato-Kyber Demo Part 2: Batch Provide", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -43,20 +43,13 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
   // For this we create a specific Gelato object called a TaskSpec
   // The TaskSpec only needs the address of the Condition, but we need to provide
   /// more information about the Actions:
-  // We start with the Action that takes our 10% Provider cut from the Users' DAI
-  const actionFeeHandler = new Action({
-    addr: actionFeeHandlerAddress,
-    data: constants.HashZero, // The exact Action payload is ignored for whitelisting
-    operation: Operation.Delegatecall, // This Action must be executed via the UserProxy
-    dataFlow: DataFlow.Out, // Tell ActionKyberTrade how much DAI to sell after fee
-    termsOkCheck: true, // Some sanity checks have to pass before Execution is granted
-  });
-  // Next, we chain the Action that automatically trades for our Users on Kyber
+
+  // Action that automatically trades for our Users on Kyber
   const kyberAction = new Action({
     addr: actionKyberTradeAddress, // The address of the contract with the Action logic
     data: constants.HashZero, // The exact Action payload is ignored for whitelisting
     operation: Operation.Delegatecall, // This Action must be executed via the UserProxy
-    dataFlow: DataFlow.In, // Expects DAI sell amount after fee from actionFeeHandler
+    dataFlow: DataFlow.None, // No data is inputted before this action by another one
     termsOkCheck: true, // Some sanity checks have to pass before Execution is granted
   });
   // We also need to chain a third Action that updates ConditionTimeStateful
@@ -74,7 +67,7 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
     // All the conditions have to be met
     conditions: [conditionTimeStatefulAddress],
     // These Actions have to be executed in the same TX all-or-nothing
-    actions: [actionFeeHandler, kyberAction, updateConditionTimeAction],
+    actions: [kyberAction, updateConditionTimeAction],
     gasPriceCeil,
   });
 
@@ -150,7 +143,7 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => provide", function () {
       try {
         console.log("\n Waiting for provide TX to get mined...");
         await multiProvideTx.wait();
-        console.log("Provide TX mined and ok ✅ \n");
+        console.log("Provide TX successfully mined ✅\n");
       } catch (error) {
         console.error("\n Provide TX error ❌ ", error);
         process.exit(1);

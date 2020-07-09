@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 1: Step 2 => Executor Assignment", function () {
+describe("Gelato-Kyber Demo Part 2: Step 1 => Provider assigns Executor", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -75,7 +75,7 @@ describe("Gelato-Kyber Demo Part 1: Step 2 => Executor Assignment", function () 
       try {
         console.log("\n Waiting for assignment TX to get mined...");
         await assignExecutorTx.wait();
-        console.log("Assignment TX mined and ok ✅ \n");
+        console.log("Assignment TX successfully mined ✅ \n");
       } catch (error) {
         console.error("\n Assignment TX error ❌ ", error);
         process.exit(1);

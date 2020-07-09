@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 2: Step 1 => Create GelatoUserProxy", function () {
+describe("Gelato-Kyber Demo Part 1: Step 1 => Create GelatoUserProxy", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -41,7 +41,7 @@ describe("Gelato-Kyber Demo Part 2: Step 1 => Create GelatoUserProxy", function 
       gelatoUserProxyFactorAddress
     );
 
-    // 2) We will later deploy a GelatoUserProxy, using the Factory's create2 method,
+    // We will later deploy a GelatoUserProxy, using the Factory's create2 method,
     //  which allows us to already predict the myUserProxyAddress now, by using the
     //  same SALT for create2 later. However, we first check if we already created
     //  a proxy before.

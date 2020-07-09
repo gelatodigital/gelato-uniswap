@@ -13,9 +13,6 @@ let myUserWalletETHBalance;
 let myUserWalletDAIBalance;
 let myUserWalletKNCBalance;
 
-// We also want to track the Provider DAI Balance to check for Provider Fees
-let myProvidersDAIBalance;
-
 async function logBalances() {
   try {
     // const DAI = bre.network.config.addressBook.erc20.DAI;
@@ -53,15 +50,6 @@ async function logBalances() {
       spender: myUserProxyAddress,
     });
 
-    // We also want to track the Provider DAI Balance to check for Provider Fees
-    // We get our Provider Wallet from the Buidler Runtime Env
-    const myProviderWallet = await bre.getProviderWallet();
-    myProviderAddress = await myProviderWallet.getAddress();
-    myProvidersDAIBalance = await bre.run("erc20-balance", {
-      owner: myProviderAddress,
-      erc20name: "DAI",
-    });
-
     const formatMyUserWalletETHBalance = utils
       .formatEther(myUserWalletETHBalance)
       .toString();
@@ -74,9 +62,6 @@ async function logBalances() {
     const formatMyUserProxyDAIAllowance = utils
       .formatEther(myUserProxyDAIAllowance)
       .toString();
-    const formatMyProvidersDAIBalance = utils
-      .formatEther(myProvidersDAIBalance)
-      .toString();
 
     const status = balanceChangeCounter > 0 ? "NEW" : "Current";
     console.log(
@@ -85,11 +70,11 @@ async function logBalances() {
         \n myUserWalletDAIBalance:   ${formatMyUserWalletDAIBalance} DAI\n
         \n myUserWalletKNCBalance:   ${formatMyUserWalletKNCBalance} KNC\n
         \n myUserProxyDAIAllowance:  ${formatMyUserProxyDAIAllowance} DAI\n
-        \n myProvidersDAIBalance:    ${formatMyProvidersDAIBalance} DAI\n`
+        `
     );
     if (balanceChangeCounter == 3) {
       console.log("\n 3 Balance changes observed ✅ ");
-      console.log("\n DEMO FINISHED 🍦  GREAT SUCCESS! ");
+      console.log("\n DEMO FINISHED 🍦 GREAT SUCCESS! ");
       process.exit(0);
     } else {
       console.log("\n ⏰  Listening for new Balance changes ... ⏰  ");
@@ -128,21 +113,10 @@ async function monitorBalancesAndLogChange() {
       ? false
       : true;
 
-    const providersDAIBalance = await bre.run("erc20-balance", {
-      owner: myProviderAddress,
-      erc20name: "DAI",
-    });
-    const providersDAIBalanceChanged = providersDAIBalance.eq(
-      myProvidersDAIBalance
-    )
-      ? false
-      : true;
-
     if (
       userWalletETHBalanceChanged ||
       userWalletDAIBalanceChanged ||
-      userWalletKNCBalanceChanged ||
-      providersDAIBalanceChanged
+      userWalletKNCBalanceChanged
     ) {
       balanceChangeCounter++;
       await logBalances();
