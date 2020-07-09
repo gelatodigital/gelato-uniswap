@@ -41,7 +41,7 @@ module.exports = {
 
         // Rinkeby: Gelato
         gelatoExecutor: {
-          default: "0x4d671CD743027fB5Af1b2D2a3ccbafA97b5B1B80", // Luis Dev Executornode
+          default: "0x99E69499973484a96639f4Fb17893BC96000b3b8", // Luis Dev Executornode
         },
 
         // Rinkeby: Kyber
@@ -184,8 +184,8 @@ require("./buidler/tasks/abi/collection.tasks.abi");
 require("./buidler/tasks/bre/collection.tasks.bre");
 
 // ======================== DEMO ======================================
-require("./demo/Part-1_Gelato_Providers/step1.1-deploy-fee-contract");
-require("./demo/Part-1_Gelato_Providers/step1.2-whitelist-fee-token");
+// require("./demo/Part-1_Gelato_Providers/step1.1-deploy-fee-contract");
+// require("./demo/Part-1_Gelato_Providers/step1.2-whitelist-fee-token");
 
 // ============== DEPLOY
 require("./buidler/tasks/deploy/collection.tasks.deploy");

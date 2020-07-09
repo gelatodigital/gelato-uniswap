@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 1: Step 3 => Provide Funds", function () {
+describe("Gelato-Kyber Demo Part 2: Step 2 => Provider deposits funds on gelato", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -77,7 +77,7 @@ describe("Gelato-Kyber Demo Part 1: Step 3 => Provide Funds", function () {
       try {
         console.log("\n Waiting for provideFunds TX to get mined...");
         await provideFundsTx.wait();
-        console.log("provideFunds TX mined and ok ✅ \n");
+        console.log("provideFunds TX successfully mined ✅ \n");
       } catch (error) {
         console.error("\n provideFunds TX error ❌ ", error);
         process.exit(1);

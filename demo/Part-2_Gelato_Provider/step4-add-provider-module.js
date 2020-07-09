@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 1: Step 6 => Add GelatoUserProxy ProviderModule", function () {
+describe("Gelato-Kyber Demo Part 2: Step 4 => Add GelatoUserProxy ProviderModule", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -67,7 +67,7 @@ describe("Gelato-Kyber Demo Part 1: Step 6 => Add GelatoUserProxy ProviderModule
       try {
         console.log("\n Waiting for addModuleTx TX to get mined...");
         await addModuleTx.wait();
-        console.log("addModuleTx TX mined and ok ✅ \n");
+        console.log("\n addModuleTx TX successfully mined ✅ \n");
       } catch (error) {
         console.error("\n addModuleTx TX error ❌ ", error);
         process.exit(1);

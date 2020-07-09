@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
+describe("Cleanup for Gelato-Kyber Demo Part 2: Batch unprovide", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -16,26 +16,21 @@ describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
   let myProviderAddress;
   let myProviderWallet;
 
-  // We will send a Transaction to GelatoCore on Rinkeby
+  // We will send a cleanup Transaction to GelatoCore on Rinkeby
   const gelatoCoreAddress = bre.network.config.deployments.GelatoCore;
   let gelatoCore;
 
-  // --> Conditions & Actions => Task (see Step1 of Demo)
+  // --> Scrap from Step 1: Conditions and Actions
   // 1) We use the already deployed instance of ConditionTimeStateful
   const conditionTimeStatefulAddress =
     bre.network.config.deployments.ConditionTimeStateful;
-  // 2) We use the already deployed instance of ActionFeeHandler
-  const actionFeeHandlerAddress =
-    bre.network.config.deployments.ActionFeeHandler;
-  // 3) We use the already deployed instance of ActionKyberTrade
+  // 2) We use the already deployed instance of ActionKyberTrade
   const actionKyberTradeAddress =
     bre.network.config.deployments.ActionKyberTrade;
 
-  // --> Step 4: Whitelist Tasks
-  // For this we create a specific Gelato object called a TaskSpec
-  // The TaskSpec only needs the address of the Condition, but we need to provide
-  /// more information about the Actions:
-  // We start with the Action that takes our 10% Provider cut from the Users' DAI
+  // --> Scrap from Step 4:
+  const actionFeeHandlerAddress =
+    bre.network.config.deployments.ActionFeeHandler;
   const actionFeeHandler = new Action({
     addr: actionFeeHandlerAddress,
     data: constants.HashZero, // The exact Action payload is ignored for whitelisting
@@ -43,7 +38,6 @@ describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
     dataFlow: DataFlow.Out, // Tell ActionKyberTrade how much DAI to sell after fee
     termsOkCheck: true, // Some sanity checks have to pass before Execution is granted
   });
-  // Next, we chain the Action that automatically trades for our Users on Kyber
   const kyberAction = new Action({
     addr: actionKyberTradeAddress, // The address of the contract with the Action logic
     data: constants.HashZero, // The exact Action payload is ignored for whitelisting
@@ -51,7 +45,6 @@ describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
     dataFlow: DataFlow.In, // Expects DAI sell amount after fee from actionFeeHandler
     termsOkCheck: true, // Some sanity checks have to pass before Execution is granted
   });
-  // We also need to chain a third Action that updates ConditionTimeStateful
   const updateConditionTimeAction = new Action({
     addr: conditionTimeStatefulAddress,
     data: constants.HashZero, // The exact Action payload is ignored for whitelisting
@@ -59,7 +52,7 @@ describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
   });
 
   // We also need to specify up to which gasPrice the Action should be executable
-  const gasPriceCeil = constants.MaxUint256;
+  const gasPriceCeil = utils.parseUnits("50", "gwei");
 
   // This is all the info we need for the TaskSpec whitelisting
   const gelatoKyberTaskSpec = new TaskSpec({
@@ -70,6 +63,11 @@ describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
     gasPriceCeil,
   });
 
+  // --> Scrap from tep 5: Select a ProviderModule
+  const providerModuleGelatoUserProxyAddress =
+    bre.network.config.deployments.ProviderModuleGelatoUserProxy;
+
+  // --> Step 6: Cleanup scrap from multiProvide tx
   before(async function () {
     // We get our Provider Wallet from the Buidler Runtime Env
     myProviderWallet = await bre.getProviderWallet();
@@ -83,61 +81,103 @@ describe("Gelato-Kyber Demo Part 1: Step 4 => Whitelist Task", function () {
     );
   });
 
-  it("Transaction to whitelist Demo Task", async function () {
-    // First we want to make sure that we havent already provided the TaskSpec
-    const taskSpecIsNotProvided =
-      (await gelatoCore.isTaskSpecProvided(
-        myProviderAddress,
-        gelatoKyberTaskSpec
-      )) === "TaskSpecNotProvided"
-        ? true
-        : false;
+  // Remove Scrap from Step6 in 2 Transactions
+  it("Unprovide everything complete", async function () {
+    const executorIsAssignedToMe =
+      (await gelatoCore.executorByProvider(myProviderAddress)) ==
+      constants.AddressZero
+        ? false
+        : true;
 
-    const currentGasPriceCeil = await gelatoCore.taskSpecGasPriceCeil(
-      myProviderAddress,
-      await gelatoCore.hashTaskSpec(gelatoKyberTaskSpec)
-    );
-
-    // Transaction
-    if (taskSpecIsNotProvided || !currentGasPriceCeil.eq(gasPriceCeil)) {
-      let provideTaskSpec;
+    if (executorIsAssignedToMe) {
+      // Cleanup TX-1:
+      let providerAssignsExecutorTx;
       try {
-        provideTaskSpec = await gelatoCore.provideTaskSpecs(
-          [gelatoKyberTaskSpec],
+        providerAssignsExecutorTx = await gelatoCore.providerAssignsExecutor(
+          constants.AddressZero,
           {
             gasLimit: 6000000,
             gasPrice: utils.parseUnits("10", "gwei"),
           }
         );
       } catch (error) {
-        console.error("\n PRE provideTaskSpecs TX error ❌  \n", error);
+        console.error("\n Cleanup: PRE Executor cleanup TX ❌  \n", error);
         process.exit(1);
       }
+
       try {
-        console.log("\n Waiting for provideTaskSpecs TX to get mined...");
-        await provideTaskSpec.wait();
-        console.log("provideTaskSpecs TX mined and ok ✅ \n");
+        console.log(
+          "\n Waiting for Executor unassignment TX to get mined .. \n"
+        );
+        await providerAssignsExecutorTx.wait();
+        console.log("\n Executor unassigned ✅ \n ");
       } catch (error) {
-        console.error("\n provideTaskSpecs TX error ❌ ", error);
+        console.error("\n Executor Cleanup TX failed ❌ ", error);
         process.exit(1);
       }
     } else {
-      console.log("\n TaskSpec already provided ✅ \n");
+      console.log("\n Executor already not assigned ✅ ");
     }
 
-    // Making sure the TaskSpec was provided
+    expect(await gelatoCore.executorByProvider(myProviderAddress)).to.be.equal(
+      constants.AddressZero
+    );
+
+    const providedFunds = await gelatoCore.providerFunds(myProviderAddress);
+    const fundsAreProvided = providedFunds.toString() === "0" ? false : true;
+
+    const taskSpecIsProvided =
+      (await gelatoCore.isTaskSpecProvided(
+        myProviderAddress,
+        gelatoKyberTaskSpec
+      )) === "TaskSpecNotProvided"
+        ? false
+        : true;
+
+    const moduleIsProvided = await gelatoCore.isModuleProvided(
+      myProviderAddress,
+      providerModuleGelatoUserProxyAddress
+    );
+
+    // Cleanup TX-2
+    if (fundsAreProvided || taskSpecIsProvided || moduleIsProvided) {
+      let multiUnprovideTx;
+      try {
+        multiUnprovideTx = await gelatoCore.multiUnprovide(
+          providedFunds, // withdrawAmount
+          taskSpecIsProvided ? [gelatoKyberTaskSpec] : [],
+          moduleIsProvided ? [providerModuleGelatoUserProxyAddress] : [],
+          { gasLimit: 6000000, gasPrice: utils.parseUnits("10", "gwei") }
+        );
+      } catch (error) {
+        console.error("\n Cleanup: PRE multiUnprovide TX ❌  \n", error);
+        process.exit(1);
+      }
+      try {
+        console.log("\n Waiting for Funds, TaskSpec, Module cleanup... \n ");
+        await multiUnprovideTx.wait();
+        console.log("Cleanup complete ✅ ");
+      } catch (error) {
+        console.error("\n multiUnprovide TX failed ❌ ", error);
+        process.exit(1);
+      }
+    } else {
+      console.log("\n Funds, TaskSpec and Module already not provided ✅ \n");
+    }
+
+    // Now we check that our Provider account on GelatoCore is reset to start
+    expect(await gelatoCore.providerFunds(myProviderAddress)).to.be.equal(0);
     expect(
       await gelatoCore.isTaskSpecProvided(
         myProviderAddress,
         gelatoKyberTaskSpec
       )
-    ).to.be.equal("OK");
-
+    ).to.be.equal("TaskSpecNotProvided");
     expect(
-      await gelatoCore.taskSpecGasPriceCeil(
+      await gelatoCore.isModuleProvided(
         myProviderAddress,
-        await gelatoCore.hashTaskSpec(gelatoKyberTaskSpec)
+        providerModuleGelatoUserProxyAddress
       )
-    ).to.be.equal(gasPriceCeil);
+    ).to.be.false;
   });
 });
