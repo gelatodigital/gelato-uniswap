@@ -314,7 +314,7 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
         let proxyDeploymentAndTaskCycleSubmissionTx;
         try {
           console.log(
-            "\n Sending Transaction to deploy GelatoUserProxy and submit Task Cycle!"
+            "\n Sending Transaction to Create Proxy, setup proxy and submit Task!"
           );
           proxyDeploymentAndTaskCycleSubmissionTx = await gelatoUserProxyFactory.createTwoExecActionsSubmitTaskCycle(
             CREATE_2_SALT,
@@ -330,20 +330,22 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
           );
         } catch (error) {
           console.error(
-            "\n PRE proxyDeploymentAndTaskCycleSubmissionTx error ❌  \n",
+            "\n PRE Create Proxy, setup proxy and submit Task Tx error ❌  \n",
             error
           );
           process.exit(1);
         }
         try {
           console.log(
-            "\n Waiting for proxyDeploymentAndTaskCycleSubmissionTx to get mined..."
+            "\n Waiting for Create Proxy, setup proxy and submit Task Tx to get mined..."
           );
           await proxyDeploymentAndTaskCycleSubmissionTx.wait();
-          console.log("\n UserProxy deployed and Task Cycle submitted ✅ \n");
+          console.log(
+            "\n Create Proxy, setup proxy and submit Task Tx submitted ✅ \n"
+          );
         } catch (error) {
           console.error(
-            "\n POST proxyDeploymentAndTaskCycleSubmissionTx error ❌ ",
+            "\n POST Create Proxy, setup proxy and submit Task Tx error ❌ ",
             error
           );
           process.exit(1);

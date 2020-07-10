@@ -150,9 +150,9 @@ describe("Gelato-Kyber Demo Part 1: Step 2 => deposit ETH on GelatoCore, select 
         await userSetupTx.wait();
         console.log("\nUser Proxy succesfully set up ✅ \n");
         console.log(`
-        \nDeposited ${ethers.utils.formatEther(fundsToDeposit)} ETH on gelato
-        \nSelected default execution network: ${defaultExecutor}
-        \nWhitelisted following provider module: ${gelatoUserProxyProviderModule} \n`);
+        \n Deposited ${ethers.utils.formatEther(fundsToDeposit)} ETH on gelato
+        \n Selected default execution network: ${defaultExecutor}
+        \n Whitelisted following provider module: ${gelatoUserProxyProviderModule} \n`);
       } catch (error) {
         console.error("\n POST userSetupTx error ❌ ", error);
         process.exit(1);

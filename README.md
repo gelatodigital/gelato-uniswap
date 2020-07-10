@@ -1,20 +1,5 @@
 <h1  align="center">Tutorial: Building an automated trading dapp using Gelato & Kyber</h1>
 
-- [Getting Started](#getting-started)
-
-  - [What we will be building](#what-we-will-be-building)
-  - [Requirements](#requirments)
-  - [Setup](#setup)
-
-- [How Gelato Works](#how-gelato-works)
-- [Tutorial](#tutorial)
-
-  - [Part 1 - Schedule trades on Kyber as a User being a Self-Provider](#part-1-schedule-trades-on-kyber-as-a-user-being-a-self-provider)
-
-  - [Part 2 - Pay for you User's transactions by becoming an External Gelato Provider](#demo-part-2-pay-for-you-users-transactions-by-becoming-an-external-gelato-provider)
-
-- [Build your own use case](#build-your-own-use-case-using-gelato)
-
 # Getting Started
 
 ## What we will be building
@@ -22,6 +7,16 @@
 <p  align="center"><img  src="https://media.giphy.com/media/LkNg7wWovGSCcOv7Hc/giphy.gif"  width="500px"/></p>
 
 The goal of this tutorial is to get you familiar with how you can use the Gelato Network to build an automated dapp. In this example, the dapp enables Users to automatically swap DAI for ETH on Kyber Network every 2 minutes using Gelato. You can think of it as a Dollar Cost Averaging Dapp build on Kyber.
+
+## Table of Content
+
+- [Requirements](#requirments)
+- [Setup](#setup)
+- [How Gelato Works](#how-gelato-works)
+- [Tutorial](#tutorial)
+  - [Part 1 - Schedule trades on Kyber as a User being a Self-Provider](#part-1-schedule-trades-on-kyber-as-a-user-being-a-self-provider)
+  - [Part 2 - Pay for you User's transactions by becoming an External Gelato Provider](#demo-part-2-pay-for-you-users-transactions-by-becoming-an-external-gelato-provider)
+- [Build your own use case](#build-your-own-use-case-using-gelato)
 
 ## Requirments
 
@@ -82,15 +77,11 @@ The faucet asks you to make a social media post with the `account` `address` (as
 
 You can get `Rinkeby` `DAI` from [Compound's Rinkeby UI](https://app.compound.finance/). You will only need DAI for your `User` Wallet.
 
-Steps to get Rinkeby DAI:
+After having ETH in your User Wallet, run this script to get some Rinkeby DAI:
 
-1. Visit [Compound's UI](https://app.compound.finance/) and make sure you are logged in to `Metamask` and select the `Rinkeby Test Network` in `Metamask`.
-2. In the left `Supply` column click on `Dai`
-3. In the pop-up click on `Withdraw`
-4. At the bottom of the pop-up click on `Faucet`
-5. Confirm in `Metamask`
-6. Add this `Custom Token` `address` to your `Metamask`: `0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa` (Rinkeby DAI)
-7. You should now have `100 Rinkeby Dai` from the `Compound Faucet`
+```
+yarn get-dai
+```
 
 If you're stuck here, feel free to reach out to us in our [Telegram](https://t.me/joinchat/HcTaOxJ0_FjU-r34vbvK8A), we are more than happy to send you some ETH & DAI ourselves.
 
@@ -135,7 +126,7 @@ If there are errors :x: please open an Issue in this repo.
 
 ## Part 1: Schedule trades on Kyber as a User being a Self-Provider
 
-The scripts will be using your `DEMO_USER_PK` as a `Wallet`. Make sure you have Rinkeby ETH and DAI on there.
+The following scripts will be using your `DEMO_USER_PK` as a `Wallet`. Make sure you have Rinkeby ETH and DAI on there.
 
 **Note:** The following steps are done individually and in separate transactions to make it clearer to you what is happening. However, all of these steps can also be done in a single transaction (+1 for approving the funds) for a better UX for your Users.
 
