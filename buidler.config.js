@@ -41,7 +41,7 @@ module.exports = {
 
         // Rinkeby: Gelato
         gelatoExecutor: {
-          default: "0x99E69499973484a96639f4Fb17893BC96000b3b8", // Luis Dev Executornode
+          default: "0xa5A98a6AD379C7B578bD85E35A3eC28AD72A336b", // PermissionedExecutors
         },
 
         // Rinkeby: Kyber
@@ -57,7 +57,6 @@ module.exports = {
         // Kyber
         "ActionKyberTrade",
         // Provider
-        "ActionFeeHandler",
         "FeeHandlerFactory",
         // === Conditions ===
         // Time
@@ -74,8 +73,6 @@ module.exports = {
         // Kyber
         ActionKyberTrade: "0xe2B2f27D674F49fB3d67D6D21F5d85EFe2B95635",
         // Provider
-        // ❗  @DEMO STEP 1.1 DEPLOY - FEE - CONTRACT ❗
-        ActionFeeHandler: "", // <-- ADD YOUR DEPLOYED ActionFeeHandler address here!
         FeeHandlerFactory: "0x6988f5c52E0b6Bdcf6d0223e65a4C49F0c2cb1F8",
         // ==== Conditions ====
         // Time
