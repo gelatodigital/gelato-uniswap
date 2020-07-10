@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 2: Step 4 => Add GelatoUserProxy ProviderModule", function () {
+describe("Gelato-Kyber Demo Part 2: Step 4", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -41,7 +41,7 @@ describe("Gelato-Kyber Demo Part 2: Step 4 => Add GelatoUserProxy ProviderModule
     );
   });
 
-  it("Transaction selecting GelatoUserProxy ProviderModule", async function () {
+  it("External Provider whitelists GelatoUserProxy ProviderModule", async function () {
     // First we need to make sure that we have not already completed any of
     // Steps 2-5 before, lest we get a reverting transaction
     const moduleIsProvided = await gelatoCore.isModuleProvided(

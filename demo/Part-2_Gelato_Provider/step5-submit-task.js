@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 2: Step 5 => User submits Task with Extneral Provider", function () {
+describe("Gelato-Kyber Demo Part 2: Step 5", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -174,8 +174,8 @@ describe("Gelato-Kyber Demo Part 2: Step 5 => User submits Task with Extneral Pr
     });
   });
 
-  // --> Step 2: Submit your Task to Gelato via your GelatoUserProxy
-  it("Transaction submitting your Task via your GelatoUserProxy", async function () {
+  // Submit your Task to Gelato via your GelatoUserProxy
+  it("User submits Task with Extneral Provider", async function () {
     // First we want to make sure that the Task we want to submit actually has
     // a valid Provider, so we need to ask GelatoCore some questions about the Provider.
 

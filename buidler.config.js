@@ -72,6 +72,8 @@ module.exports = {
         // ==== Actions ====
         // Kyber
         ActionKyberTrade: "0xe2B2f27D674F49fB3d67D6D21F5d85EFe2B95635",
+        // Transfer
+        ActionTransfer: "0x783bD05d52B02811dECC8960aBF38A56c9Fb5F9B",
         // Provider
         FeeHandlerFactory: "0x6988f5c52E0b6Bdcf6d0223e65a4C49F0c2cb1F8",
         // ==== Conditions ====

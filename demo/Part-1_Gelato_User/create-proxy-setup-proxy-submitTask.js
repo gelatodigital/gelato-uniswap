@@ -156,7 +156,7 @@ describe("Gelato-Kyber Demo Part 1: All in one Tx: Create proxy, do setup and su
   });
 
   // --> Step 2: Submit your Task to Gelato via your GelatoUserProxy
-  it("I, as the Gelato User, deployed my UserProxy and submitted my Task Cycle", async function () {
+  it("Deployed UserProxy, conducted setup and submitted my Task Cycle", async function () {
     // First we want to make sure that the Task we want to submit actually has
     // a valid Provider, so we need to ask GelatoCore some questions about the Provider.
 

@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 1: Step 1 => Create GelatoUserProxy", function () {
+describe("Gelato-Kyber Demo Part 1: Step 1", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -58,7 +58,7 @@ describe("Gelato-Kyber Demo Part 1: Step 1 => Create GelatoUserProxy", function 
     }
   });
 
-  it("Transaction to deploy your GelatoUserProxy", async function () {
+  it("Create GelatoUserProxy", async function () {
     // Transaction to deploy your GelatoUserProxy a
     // If we have not deployed our GelatoUserProxy yet, we deploy it and submit our
     // TaskCycle via the GelatoUserProxyFactory

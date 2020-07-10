@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 2: Step 1 => Provider assigns Executor", function () {
+describe("Gelato-Kyber Demo Part 2: Step 1", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -38,7 +38,7 @@ describe("Gelato-Kyber Demo Part 2: Step 1 => Provider assigns Executor", functi
     );
   });
 
-  it("Demo Part 1 Step2: Assign Gelato Default Executor", async function () {
+  it("External Provider assigns Executor", async function () {
     // First we need to make sure that we have not already assigned our Executor before
     const assignedExecutor = await gelatoCore.executorByProvider(
       myProviderAddress
