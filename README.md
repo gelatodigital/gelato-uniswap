@@ -162,6 +162,8 @@ To accomplish the above, run the following script:
 yarn userproxy-setup
 ```
 
+[`demo/Part-1_Gelato_User/step2-user-proxy-setup.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-1_Gelato_User/step2-user-proxy-setup.js)
+
 ### Step 3: User submits a Task to Gelato via the deployed smart contract wallet
 
 In this example, the User wants to instruct Gelato to execute 3 trades in total on his behalf, each swapping 1 DAI to KNC every 2 minutes.
@@ -213,8 +215,6 @@ Now for the Grande Finale, run this script:
 yarn submit-task-self-provider-and-monitor
 ```
 
-### Step 4: Wait for your trades to go through
-
 **Wait for about 7 minutes for the script to complete.**
 
 If you are interested in the code that was run, take a peek at this script:
@@ -228,6 +228,18 @@ It's time to grab a coffee ☕and watch your trades be executed by gelato while 
 Just under 7 minutes have passed since we ran the `yarn submit-task-self-provider-and-monitor` command.
 
 We should have observed in the running script output, or from our Metamask GUI, that **1 `DAI`** was **swapped** for **`KNC`** in **3 intervals**. First right after you ran the command and then two more times roughly **every 2 minutes**.
+
+### Step 4: Withdraw your remaining ETH balance back your Users' Wallet (optional)
+
+To withdraw the remaining ETH balanance of your User back to his wallet, run the following script:
+
+```
+yarn withdraw-remaining-eth
+```
+
+If you are interested in the code that was run, take a peek at this script:
+
+[`demo/Part-1_Gelato_User/step4-withdraw-remaining-eth.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-1_Gelato_User/step4-withdraw-remaining-eth.js)
 
 ### Congrats, you finished Demo Part 1!
 
@@ -339,6 +351,10 @@ Run this to let the User submit the Task to gelato, without having to pay for it
 ```
 yarn submit-task-external-provider-and-monitor
 ```
+
+You can check out the script here:
+
+[`demo/Part-2_Gelato_Provider/step5-submit-task.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-2_Gelato_Provider/step5-submit-task.js)
 
 What will happen now?
 

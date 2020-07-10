@@ -9,7 +9,7 @@ import { expect } from "chai";
 import bre from "@nomiclabs/buidler";
 import DataFlow from "../../src/enums/gelato/DataFlow";
 
-describe("Gelato-Kyber Demo Part 1: Step 2 => deposit ETH on GelatoCore, select default Gelato Execution Network and tell Gelato what kind of a proxy will interact with it via UserProxy", function () {
+describe("Gelato-Kyber Demo Part 1: Step 2", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -69,7 +69,7 @@ describe("Gelato-Kyber Demo Part 1: Step 2 => deposit ETH on GelatoCore, select 
     }
   });
 
-  it("Transaction submitting your Task via your GelatoUserProxy", async function () {
+  it("Deposit ETH on GelatoCore, select default Gelato Execution Network and tell Gelato what kind of a proxy will interact with it via UserProxy", async function () {
     // Instantiate GelatoCore contract instance for sanity checks
     const gelatoCore = await ethers.getContractAt(
       "IGelatoProviders", // fetches the contract ABI from artifacts/

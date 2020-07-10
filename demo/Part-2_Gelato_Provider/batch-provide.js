@@ -94,7 +94,7 @@ describe("Gelato-Kyber Demo Part 2: Batch Provide", function () {
   });
 
   // Complete Steps 2-5 in one Transaction
-  it("I, as the Gelato Provider, successfully completed demo Steps 2-5", async function () {
+  it("I, as the Gelato Provider, successfully completed demo Steps 1-4", async function () {
     // First we need to make sure that we have not already completed any of
     // Steps 2-5 before, lest we get a reverting transaction
     const currentProviderFunds = await gelatoCore.providerFunds(

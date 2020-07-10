@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 2: Step 2 => Provider deposits funds on gelato", function () {
+describe("Gelato-Kyber Demo Part 2: Step 2", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -55,7 +55,7 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => Provider deposits funds on gelato"
     );
   });
 
-  it("Transaction to provide Funds to Gelato", async function () {
+  it("External Provider deposits funds on gelato", async function () {
     // First we need to make sure that we have not already provided the funds
     const currentProviderFunds = await gelatoCore.providerFunds(
       myProviderAddress

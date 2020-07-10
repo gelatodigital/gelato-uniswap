@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 2: Step 3 => Provider whitelists TaskSpec", function () {
+describe("Gelato-Kyber Demo Part 2: Step 3", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -77,7 +77,7 @@ describe("Gelato-Kyber Demo Part 2: Step 3 => Provider whitelists TaskSpec", fun
     );
   });
 
-  it("Transaction to whitelist Demo Task", async function () {
+  it("External Provider whitelists TaskSpec", async function () {
     // First we want to make sure that we havent already provided the TaskSpec
     const taskSpecIsNotProvided =
       (await gelatoCore.isTaskSpecProvided(

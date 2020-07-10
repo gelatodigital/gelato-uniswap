@@ -16,6 +16,7 @@
     "create-userproxy": "npx buidler test demo/Part-1_Gelato_User/step1-create-user-proxy.js",
     "userproxy-setup": "npx buidler test demo/Part-1_Gelato_User/step2-user-proxy-setup.js",
     "submit-task-self-provider": "npx buidler test demo/Part-1_Gelato_User/step3-submit-task.js",
+    "withdraw-remaining-eth": "npx buidler test demo/Part-1_Gelato_User/step4-withdraw-remaining-eth.js",
     "submit-task-self-provider-and-monitor": "npx buidler test demo/Part-1_Gelato_User/step3-submit-task.js && npx buidler run demo/Part-1_Gelato_User/monitorBalanceChanges.js",
     "submit-task-external-provider-and-monitor": "npx buidler test demo/Part-2_Gelato_Provider/step5-submit-task.js && npx buidler run demo/Part-1_Gelato_User/monitorBalanceChanges.js",
     "create-userproxy-setup-proxy-and-submit-task": "npx buidler test demo/Part-1_Gelato_User/create-proxy-setup-proxy-submitTask.js",
