@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", function () {
+describe("Gelato-Kyber Demo Part 1: All in one Tx: Create proxy, do setup and submit Task", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -32,11 +32,10 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
   // 2) We will deploy a GelatoUserProxy using the Factory, or if we already deployed
   //  one, we will use that one.
   let proxyIsDeployedAlready;
-  let myUserProxyAddress;
   let myUserProxy;
   const CREATE_2_SALT = 42069; // for create2 and address prediction
 
-  const estimatedGasPerExecution = 500000;
+  const estimatedGasPerExecution = ethers.utils.bigNumberify("500000");
 
   // --> Step 2: Submit your Task to Gelato via your GelatoUserProxy constants & vars
   // 1) We use the already deployed instance of ConditionTimeStateful
@@ -74,7 +73,7 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
       gelatoUserProxyFactorAddress
     );
 
-    currentGelatoGasPrice = await run("fetchGelatoGasPrice");
+    currentGelatoGasPrice = await bre.run("fetchGelatoGasPrice");
 
     // 2) We will later deploy a GelatoUserProxy alongside Task submission,
     //  using the Factory's create2 method, which allows us to already predict
@@ -152,11 +151,7 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
       // All the conditions have to be met
       conditions: [conditionEvery2minutes],
       // These Actions have to be executed in the same TX all-or-nothing
-      actions: [
-        actionPayProvider10percentOfDai,
-        actionTradeDaiOnKyber,
-        actionUpdateConditionTime,
-      ],
+      actions: [actionTradeDaiOnKyber, actionUpdateConditionTime],
     });
   });
 
@@ -248,14 +243,14 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
       if (!myUserProxyDAIAllowance.gte(utils.parseUnits("3", 18))) {
         try {
           console.log("\n Sending Transaction to approve UserProxy for DAI.");
-          console.log("Waiting for DAI Approval Tx to be mined....");
+          console.log("\n Waiting for DAI Approval Tx to be mined....");
           await bre.run("erc20-approve", {
             erc20name: "DAI",
             amount: utils.parseUnits("3", 18).toString(),
             spender: myUserProxyAddress,
           });
           console.log(
-            "Gelato User Proxy now has your Approval to move 3 DAI  ✅ \n"
+            "\n Gelato User Proxy now has your Approval to move 3 DAI  ✅ \n"
           );
         } catch (error) {
           console.error("\n UserProxy DAI Approval failed ❌  \n", error);
@@ -263,7 +258,7 @@ describe("Gelato-Kyber Demo Part 2: Step 2 => submit Task Chain via UserProxy", 
         }
       } else {
         console.log(
-          "Gelato User Proxy already has your Approval to move 3 DAI  ✅ \n"
+          "\n Gelato User Proxy already has your Approval to move 3 DAI  ✅ \n"
         );
       }
 
