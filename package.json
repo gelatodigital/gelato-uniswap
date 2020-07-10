@@ -6,6 +6,7 @@
   "author": "The legendary members of gelato-digital",
   "private": false,
   "scripts": {
+    "get-dai": "npx buidler get-dai --network rinkeby",
     "assign-executor": "npx buidler test demo/Part-2_Gelato_Provider/step1-assign-executor.js",
     "provide-funds": "npx buidler test demo/Part-2_Gelato_Provider/step2-provide-funds.js",
     "whitelist-task": "npx buidler test demo/Part-2_Gelato_Provider/step3-whitelist-task.js",
