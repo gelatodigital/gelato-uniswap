@@ -288,8 +288,7 @@ describe("Gelato-Kyber Demo Part 1: Step 3 => submit Task via UserProxy", functi
       let taskSubmissionTx;
       try {
         console.log("\n Sending Transaction to submit Task!");
-        taskSubmissionTx = await myUserProxy.execActionsAndSubmitTaskCycle(
-          [actionUpdateConditionTime], // setup the Time Condition for first trade in 2 mins
+        taskSubmissionTx = await myUserProxy.submitTaskCycle(
           myGelatoProvider,
           [taskTradeOnKyber], // we only have one type of Task
           expiryDate, // auto-cancel if not completed in 15 minutes from now

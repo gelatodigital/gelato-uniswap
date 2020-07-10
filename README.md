@@ -196,7 +196,7 @@ The following script sends 2 transactions:
 
 1. `Approving` the User's `GelatoUserProxy` to move `3 DAI` from the UserWallet if the conditions are fulfilled. This means that the DAI will remain in the Users Wallet until the condition returns "OK" and the User's proxy withdraws them out in order to trade on Kyber.
 
-2. `Submitting the task` to `GelatoCore.sol`, which defines that we want to trade on Kyber every 2 mintues.
+2. `Submitting the task` to `GelatoCore.sol`, which defines that we want to trade on Kyber every 2 mintues STARTING NOW.
 
 If you want to, you can also watch your `USER` account balances for `DAI` and `KNC` on Metmask or Etherscan.
 Remember, all of this is on Rinkeby. So if you use Metamask, you need to add these Custom Tokens to your GUI, to check out your balances there.
@@ -215,7 +215,7 @@ yarn submit-task-self-provider-and-monitor
 
 ### Step 4: Wait for your trades to go through
 
-**Wait for about 8 minutes for the script to complete.**
+**Wait for about 7 minutes for the script to complete.**
 
 If you are interested in the code that was run, take a peek at this script:
 
@@ -223,11 +223,11 @@ If you are interested in the code that was run, take a peek at this script:
 
 It's time to grab a coffee ☕and watch your trades be executed by gelato while you sit back and relax. In order to visualize your token balances changing, check out the logs in your console, changing token balances in Metamask or your account on Etherscan Rinkeby.
 
-**🕒10 minutes later 🕒**
+**🕒7 minutes later 🕒**
 
-Just under 10 minutes have passed since we ran the `yarn submit-task-self-provider-and-monitor` command.
+Just under 7 minutes have passed since we ran the `yarn submit-task-self-provider-and-monitor` command.
 
-We should have observed in the running script output, or from our Metamask GUI, that **1 `DAI`** was **swapped** for **`KNC`** in **3 intervals** roughly **every 2 minutes**.
+We should have observed in the running script output, or from our Metamask GUI, that **1 `DAI`** was **swapped** for **`KNC`** in **3 intervals**. First right after you ran the command and then two more times roughly **every 2 minutes**.
 
 ### Congrats, you finished Demo Part 1!
 
