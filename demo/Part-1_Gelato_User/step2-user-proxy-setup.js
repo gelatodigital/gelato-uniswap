@@ -72,7 +72,7 @@ describe("Gelato-Kyber Demo Part 1: Step 2", function () {
   it("Deposit ETH on GelatoCore, select default Gelato Execution Network and tell Gelato what kind of a proxy will interact with it via UserProxy", async function () {
     // Instantiate GelatoCore contract instance for sanity checks
     const gelatoCore = await ethers.getContractAt(
-      "IGelatoProviders", // fetches the contract ABI from artifacts/
+      "GelatoCore", // fetches the contract ABI from artifacts/
       network.config.deployments.GelatoCore // the Rinkeby Address of the deployed GelatoCore
     );
 
@@ -117,7 +117,7 @@ describe("Gelato-Kyber Demo Part 1: Step 2", function () {
     const userSetupAction = new Action({
       addr: gelatoCore.address,
       data: await bre.run("abi-encode-withselector", {
-        contractname: "IGelatoProviders",
+        contractname: "GelatoCore",
         functionname: "multiProvide",
         inputs: [
           isDefaultExecutorAssigned ? constants.AddressZero : defaultExecutor,

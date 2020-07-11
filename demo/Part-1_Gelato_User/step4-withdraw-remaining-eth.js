@@ -71,7 +71,7 @@ describe("Gelato-Kyber Demo Part 1: Step 4", function () {
   it("Withdraw remaining ETH from Gelato", async function () {
     // Instantiate GelatoCore contract instance for sanity checks
     const gelatoCore = await ethers.getContractAt(
-      "IGelatoProviders", // fetches the contract ABI from artifacts/
+      "GelatoCore", // fetches the contract ABI from artifacts/
       network.config.deployments.GelatoCore // the Rinkeby Address of the deployed GelatoCore
     );
 
@@ -80,7 +80,7 @@ describe("Gelato-Kyber Demo Part 1: Step 4", function () {
     const withdrawAction = new Action({
       addr: gelatoCore.address,
       data: await bre.run("abi-encode-withselector", {
-        contractname: "IGelatoProviders",
+        contractname: "GelatoCore",
         functionname: "unprovideFunds",
         inputs: [balanceOnGelato /* userProxyFunds */],
       }),

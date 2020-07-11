@@ -87,7 +87,7 @@ describe("Gelato-Kyber Demo Part 2: Batch Provide", function () {
 
     // Instantiate GelatoCore contract instance connected to our ProviderWallet
     gelatoCore = await ethers.getContractAt(
-      "IGelatoProviders", // fetches the contract ABI from artifacts/
+      "GelatoCore", // fetches the contract ABI from artifacts/
       gelatoCoreAddress, // the Rinkeby Address of the deployed GelatoCore
       myProviderWallet // We send a tx to the contract from our Provider Wallet
     );
