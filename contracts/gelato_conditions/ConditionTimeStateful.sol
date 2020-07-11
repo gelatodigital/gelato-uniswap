@@ -1,10 +1,10 @@
 // "SPDX-License-Identifier: UNLICENSED"
 pragma solidity ^0.6.10;
 
-import {GelatoStatefulConditionsStandard} from "./GelatoStatefulConditionsStandard.sol";
-import {SafeMath} from "../external/SafeMath.sol";
-import {IGelatoCore} from "../gelato_core/IGelatoCore.sol";
-import {IERC20} from "../external/IERC20.sol";
+import {GelatoStatefulConditionsStandard} from "@gelatonetwork/core/contracts/conditions/GelatoStatefulConditionsStandard.sol";
+import {SafeMath} from "@gelatonetwork/core/contracts/external/SafeMath.sol";
+import {IGelatoCore} from "@gelatonetwork/core/contracts/gelato_core/interfaces/IGelatoCore.sol";
+import {IERC20} from "@gelatonetwork/core/contracts/external/IERC20.sol";
 
 contract ConditionTimeStateful is GelatoStatefulConditionsStandard {
 

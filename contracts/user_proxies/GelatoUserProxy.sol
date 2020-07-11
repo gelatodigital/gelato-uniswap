@@ -3,10 +3,10 @@ pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
 import {IGelatoUserProxy} from ".//IGelatoUserProxy.sol";
-import {GelatoBytes} from "../libraries/GelatoBytes.sol";
+import {GelatoBytes} from "@gelatonetwork/core/contracts/libraries/GelatoBytes.sol";
 import {
     Action, Operation, Provider, Task, TaskReceipt, IGelatoCore
-} from "../gelato_core/IGelatoCore.sol";
+} from "@gelatonetwork/core/contracts/gelato_core/interfaces/IGelatoCore.sol";
 
 contract GelatoUserProxy is IGelatoUserProxy {
 

@@ -1,14 +1,14 @@
 // "SPDX-License-Identifier: UNLICENSED"
 pragma solidity ^0.6.10;
 
-import {GelatoActionsStandard} from "./GelatoActionsStandard.sol";
-import {IGelatoInFlowAction} from "./IGelatoInFlowAction.sol";
-import {DataFlow} from "../gelato_core/IGelatoCore.sol";
-import {GelatoBytes} from "../libraries/GelatoBytes.sol";
-import {SafeERC20} from "../external/SafeERC20.sol";
-import {SafeMath} from "../external/SafeMath.sol";
-import {IERC20} from "../external/IERC20.sol";
-import {IKyberNetworkProxy} from "../dapp_interfaces/IKyberNetworkProxy.sol";
+import {GelatoActionsStandard} from "@gelatonetwork/core/contracts/actions/GelatoActionsStandard.sol";
+import {IGelatoInFlowAction} from "@gelatonetwork/core/contracts/actions/action_interfaces/IGelatoInFlowAction.sol";
+import {DataFlow} from "@gelatonetwork/core/contracts/gelato_core/interfaces/IGelatoCore.sol";
+import {GelatoBytes} from "@gelatonetwork/core/contracts/libraries/GelatoBytes.sol";
+import {SafeERC20} from "@gelatonetwork/core/contracts/external/SafeERC20.sol";
+import {SafeMath} from "@gelatonetwork/core/contracts/external/SafeMath.sol";
+import {IERC20} from "@gelatonetwork/core/contracts/external/IERC20.sol";
+import {IKyberNetworkProxy} from "./dapp_interfaces/IKyberNetworkProxy.sol";
 
 contract ActionKyberTrade is GelatoActionsStandard, IGelatoInFlowAction {
     using SafeMath for uint256;
@@ -42,11 +42,6 @@ contract ActionKyberTrade is GelatoActionsStandard, IGelatoInFlowAction {
             _receiveToken,
             _receiver
         );
-    }
-
-    /// @dev Used by GelatoActionPipeline.isValid()
-    function DATA_FLOW_IN_TYPE() public pure virtual override returns (bytes32) {
-        return keccak256("TOKEN,UINT256");
     }
 
     function action(
@@ -120,6 +115,11 @@ contract ActionKyberTrade is GelatoActionsStandard, IGelatoInFlowAction {
             receiveAmount,
             receiver
         );
+    }
+
+    /// @dev Used by GelatoActionPipeline.isValid()
+    function DATA_FLOW_IN_TYPE() public pure virtual override returns (bytes32) {
+        return keccak256("TOKEN,UINT256");
     }
 
     /// @dev Will be called by GelatoActionPipeline if Action.dataFlow.In

@@ -2,14 +2,14 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
-import {GelatoActionsStandard} from "./GelatoActionsStandard.sol";
-import {IGelatoOutFlowAction} from "./IGelatoOutFlowAction.sol";
-import {DataFlow} from "../gelato_core/IGelatoCore.sol";
-import {Address} from "../external/Address.sol";
-import {GelatoBytes} from "../libraries/GelatoBytes.sol";
-import {SafeERC20} from "../external/SafeERC20.sol";
-import {SafeMath} from "../external/SafeMath.sol";
-import {IERC20} from "../external/IERC20.sol";
+import {GelatoActionsStandard} from "@gelatonetwork/core/contracts/actions/GelatoActionsStandard.sol";
+import {IGelatoOutFlowAction} from "@gelatonetwork/core/contracts/actions/action_interfaces/IGelatoOutFlowAction.sol";
+import {DataFlow} from "@gelatonetwork/core/contracts/gelato_core/interfaces/IGelatoCore.sol";
+import {Address} from "@gelatonetwork/core/contracts/external/Address.sol";
+import {GelatoBytes} from "@gelatonetwork/core/contracts/libraries/GelatoBytes.sol";
+import {SafeERC20} from "@gelatonetwork/core/contracts/external/SafeERC20.sol";
+import {SafeMath} from "@gelatonetwork/core/contracts/external/SafeMath.sol";
+import {IERC20} from "@gelatonetwork/core/contracts/external/IERC20.sol";
 
 contract ActionFeeHandler is GelatoActionsStandard, IGelatoOutFlowAction {
     // using SafeERC20 for IERC20; <- internal library methods vs. try/catch

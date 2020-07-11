@@ -2,12 +2,12 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
-import {GelatoActionsStandardFull} from "./GelatoActionsStandardFull.sol";
-import {IERC20} from "../external/IERC20.sol";
-import {Address} from "../external/Address.sol";
-import {GelatoBytes} from "../libraries/GelatoBytes.sol";
-import {SafeERC20} from "../external/SafeERC20.sol";
-import {DataFlow} from "../gelato_core/IGelatoCore.sol";
+import {GelatoActionsStandardFull} from "@gelatonetwork/core/contracts/actions/GelatoActionsStandardFull.sol";
+import {IERC20} from "@gelatonetwork/core/contracts/external/IERC20.sol";
+import {Address} from "@gelatonetwork/core/contracts/external/Address.sol";
+import {GelatoBytes} from "@gelatonetwork/core/contracts/libraries/GelatoBytes.sol";
+import {SafeERC20} from "@gelatonetwork/core/contracts/external/SafeERC20.sol";
+import {DataFlow} from "@gelatonetwork/core/contracts/gelato_core/interfaces/IGelatoCore.sol";
 
 /// @dev This action is for user proxies that store funds.
 contract ActionTransfer is GelatoActionsStandardFull {
