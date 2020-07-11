@@ -168,7 +168,7 @@ describe("Gelato-Kyber Demo Part 1: Step 3", function () {
 
     // Instantiate GelatoCore contract instance for sanity checks
     const gelatoCore = await ethers.getContractAt(
-      "IGelatoProviders", // fetches the contract ABI from artifacts/
+      "GelatoCore", // fetches the contract ABI from artifacts/
       network.config.deployments.GelatoCore // the Rinkeby Address of the deployed GelatoCore
     );
 
