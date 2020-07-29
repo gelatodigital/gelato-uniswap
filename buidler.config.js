@@ -58,6 +58,7 @@ module.exports = {
         "ActionKyberTrade",
         // Provider
         "FeeHandlerFactory",
+        "GelatoTokenFaucet",
         // === Conditions ===
         // Time
         "ConditionTimeStateful",
@@ -86,6 +87,7 @@ module.exports = {
         // ===== Provider Modules ====
         ProviderModuleGelatoUserProxy:
           "0x66a35534126B4B0845A2aa03825b95dFaaE88B0C",
+        GelatoTokenFaucet: "0xbA7A7187EF22fE2B001bF8e4707B66B3985F5805",
       },
 
       // Rinkeby: Filters
