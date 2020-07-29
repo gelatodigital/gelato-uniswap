@@ -6,7 +6,7 @@
 
 <p  align="center"><img  src="https://media.giphy.com/media/LkNg7wWovGSCcOv7Hc/giphy.gif"  width="500px"/></p>
 
-The goal of this tutorial is to get you familiar with how you can use the Gelato Network to build an automated dapp. In this example, the dapp enables Users to automatically swap DAI for ETH on Kyber Network every 2 minutes using Gelato. You can think of it as a Dollar Cost Averaging Dapp build on Kyber.
+The goal of this tutorial is to get you familiar with how you can use the Gelato Network to build an automated dapp. In this example, the dapp enables Users to automatically swap KNC for ETH on Kyber Network every 2 minutes using Gelato. You can think of it as a Dollar Cost Averaging Dapp build on Kyber.
 
 ## Table of Content
 
@@ -38,7 +38,7 @@ yarn install  # or npm install
 
 You will probably see some `gyp-error` depending on which version of `node` you use. Don't worry about it.
 
-### 2. Import a private key into your .env
+### 2. Set up .env with your Infura Key & 2 private keys of separate accounts
 
 Add a `.env` file to the project root level:
 
@@ -65,9 +65,9 @@ One way to get private keys for `DEMO_USER_PK` and `DEMO_PROVIDER_PK` is to inst
 Inputting the `DEMO_USER_PK` will allow the scripts in **Part 1** that you will later run in this demo, to use your `User` Wallet.
 Inputting the `DEMO_PROVIDER_PK` will allow the scripts in **Part 2** in the second part of the demo, to use your `External Provider` Wallet.
 
-Do not share your Private Keys swith anyone!
+Do not share your Private Keys with anyone!
 
-### 3. Fund your User & Provider Account with some Rinkeby ETH and your User account with some DAI
+### 3. Fund your User & Provider Account with some Rinkeby ETH and your User account with some KNC
 
 You can get `Rinkeby` `ETH` from this [faucet](https://faucet.rinkeby.io/).
 The faucet asks you to make a social media post with the `account` `address` (as displayed in `Metamask`) corresponding to one of the Private Keys.
@@ -75,15 +75,13 @@ The faucet asks you to make a social media post with the `account` `address` (as
 - Deposit at least 2 ETH to the account associated with the DEMO_USER_PK.
 - Deposit at least 3 ETH to the account associated with the DEMO_PROVIDER_PK.
 
-You can get `Rinkeby` `DAI` from [Compound's Rinkeby UI](https://app.compound.finance/). You will only need DAI for your `User` Wallet.
-
-After having ETH in your User Wallet, run this script to get some Rinkeby DAI:
+After having ETH in your User Wallet, run this script to get some Rinkeby KNC:
 
 ```
-yarn get-dai
+yarn get-knc
 ```
 
-If you're stuck here, feel free to reach out to us in our [Telegram](https://t.me/joinchat/HcTaOxJ0_FjU-r34vbvK8A), we are more than happy to send you some ETH & DAI ourselves.
+If you're stuck here, feel free to reach out to us in our [Telegram](https://t.me/joinchat/HcTaOxJ0_FjU-r34vbvK8A), we are more than happy to send you some ETH & KNC ourselves.
 
 ### 4. Compile the smart contracts
 
@@ -92,6 +90,8 @@ In order to run the following scripts, you must first compile the smart contract
 ```
 npx buidler compile
 ```
+
+Note: You can only request 50 KNC from this faucet once a day.
 
 # How Gelato Works
 
@@ -116,7 +116,7 @@ Now to the fun part, experiencing Gelato in action!
 
 Part 1 of this tutorial puts you in the shoes of a regular end-user to let you experience a demo dapp which uses gelato as the execution infrastucture.
 
-The dapp lets User's pre-schedule trades on [Kyber Network](https://kyber.network/). In other words, users can schedule to `automatically trade DAI for KNC on Kyber every 2 minutes for a total number of 3 trades`.
+The dapp lets User's pre-schedule trades on [Kyber Network](https://kyber.network/). In other words, users can schedule to `automatically trade KNC for ETH on Kyber every 2 minutes for a total number of 3 trades`.
 
 Watch your console for confirmation text and green ticks :white_check_mark:
 
@@ -126,7 +126,7 @@ If there are errors :x: please open an Issue in this repo.
 
 ## Part 1: Schedule trades on Kyber as a User being a Self-Provider
 
-The following scripts will be using your `DEMO_USER_PK` as a `Wallet`. Make sure you have Rinkeby ETH and DAI on there.
+The following scripts will be using your `DEMO_USER_PK` as a `Wallet`. Make sure you have Rinkeby ETH and KNC on there.
 
 **Note:** The following steps are done individually and in separate transactions to make it clearer to you what is happening. However, all of these steps can also be done in a single transaction (+1 for approving the funds) for a better UX for your Users.
 
@@ -166,7 +166,7 @@ yarn userproxy-setup
 
 ### Step 3: User submits a Task to Gelato via the deployed smart contract wallet
 
-In this example, the User wants to instruct Gelato to execute 3 trades in total on his behalf, each swapping 1 DAI to KNC every 2 minutes.
+In this example, the User wants to instruct Gelato to execute 3 trades in total on his behalf, each swapping 1 KNC to ETH every 2 minutes.
 
 A `Gelato Task` is just the combination of `Conditions` (when to execute a transaction) and `Actions` (what the transaction should execute).
 
@@ -176,9 +176,9 @@ Here, we define our `Task` like so:
 
 - `Condition`: **Every 2 minutes** (or every time a certain timestamp has been reached on Ethereum)
 
-- `Action`: **Trade 1 DAI for KNC on KyberNetwork** (call the trade function on the kyber network smart contract)
+- `Action`: **Trade 1 KNC for ETH on KyberNetwork** (call the trade function on the kyber network smart contract)
 
-- `Task`: **Every 2 minutes, trade 1 DAI for KNC on KyberNetwork**
+- `Task`: **Every 2 minutes, trade 1 KNC for ETH on KyberNetwork**
 
 Conditions are smart contracts checked by the GelatoCore smart contract and determine if a task can be executed in a given block or not.
 
@@ -196,18 +196,16 @@ In this example, the User is setting a limit of 3 executions, User's could poten
 
 The following script sends 2 transactions:
 
-1. `Approving` the User's `GelatoUserProxy` to move `3 DAI` from the UserWallet if the conditions are fulfilled. This means that the DAI will remain in the Users Wallet until the condition returns "OK" and the User's proxy withdraws them out in order to trade on Kyber.
+1. `Approving` the User's `GelatoUserProxy` to move `3 KNC` from the UserWallet if the conditions are fulfilled. This means that the KNC will remain in the Users Wallet until the condition returns "OK" and the User's proxy withdraws them out in order to trade on Kyber.
 
 2. `Submitting the task` to `GelatoCore.sol`, which defines that we want to trade on Kyber every 2 mintues STARTING NOW.
 
-If you want to, you can also watch your `USER` account balances for `DAI` and `KNC` on Metmask or Etherscan.
+If you want to, you can also watch your `USER` account balances for `KNC` and `ETH` on Metmask or Etherscan.
 Remember, all of this is on Rinkeby. So if you use Metamask, you need to add these Custom Tokens to your GUI, to check out your balances there.
 
 The script will keep on running listenting for events and printing information to the console as soon as an automatic trade was detected.
 
-`DAI=0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa`
-
-`KNC=0x6FA355a7b6bD2D6bD8b927C489221BFBb6f1D7B2`
+`KNC=0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa`
 
 Now for the Grande Finale, run this script:
 
@@ -227,7 +225,7 @@ It's time to grab a coffee ☕and watch your trades be executed by gelato while 
 
 Just under 7 minutes have passed since we ran the `yarn submit-task-self-provider-and-monitor` command.
 
-We should have observed in the running script output, or from our Metamask GUI, that **1 `DAI`** was **swapped** for **`KNC`** in **3 intervals**. First right after you ran the command and then two more times roughly **every 2 minutes**.
+We should have observed in the running script output, or from our Metamask GUI, that **1 `KNC`** was **swapped** for **`ETH`** in **3 intervals**. First right after you ran the command and then two more times roughly **every 2 minutes**.
 
 ### Step 4: Withdraw your remaining ETH balance back your Users' Wallet (optional)
 
@@ -364,7 +362,7 @@ What will happen now?
 
 Just under 10 minutes have passed since we ran the `yarn submit-task-external-provider-and-monitor` command.
 
-We should have observed in the running script output, or from our Metamask GUI, that **1 `DAI`** was **swapped** for **`KNC`** in **3 intervals** roughly **every 2 minutes**. However, the ETH balance of the User on Gelato did not change, but the balance of the provider got decremented by the execution costs.
+We should have observed in the running script output, or from our Metamask GUI, that **1 `KNC`** was **swapped** for **`ETH`** in **3 intervals** roughly **every 2 minutes**. However, the ETH balance of the User on Gelato did not change, but the balance of the provider got decremented by the execution costs.
 
 **For future reference:**
 
