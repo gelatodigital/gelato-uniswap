@@ -25,8 +25,7 @@ describe("Gelato-Kyber Demo Part 2: Batch Provide", function () {
   const conditionTimeStatefulAddress =
     bre.network.config.deployments.ConditionTimeStateful;
   // 2) We use the already deployed instance of ActionFeeHandler
-  const actionFeeHandlerAddress =
-    bre.network.config.deployments.ActionFeeHandler;
+  bre.network.config.deployments.ActionFeeHandler;
   // 3) We use the already deployed instance of ActionKyberTrade
   const actionKyberTradeAddress =
     bre.network.config.deployments.ActionKyberTrade;

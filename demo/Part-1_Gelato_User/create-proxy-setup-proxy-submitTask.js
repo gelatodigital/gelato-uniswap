@@ -44,15 +44,15 @@ describe("Gelato-Kyber Demo Part 1: All in one Tx: Create proxy, do setup and su
   let conditionTimeStateful; // contract instance
   let conditionEvery2minutes; // gelato Condition obj
 
-  const DAI = bre.network.config.addressBook.erc20.DAI;
-  const DAI_AMOUNT_PER_TRADE = utils.parseUnits("1", 18);
+  const KNC = bre.network.config.addressBook.erc20.KNC;
+  const KNC_AMOUNT_PER_TRADE = utils.parseUnits("1", 18);
 
   // 3) We use the already deployed instance of ActionKyberTrade
   const actionKyberTradeAddress =
     bre.network.config.deployments.ActionKyberTrade;
   let actionKyberTrade; // contract instance
   let actionTradeDaiOnKyber; // gelato Action obj
-  const KNC = bre.network.config.addressBook.erc20.KNC;
+  const ETH = bre.network.config.addressBook.kyber.ETH;
 
   // 4) The last Action updates the ConditionTimeStateful with the time of the last trade
   let actionUpdateConditionTime; // gelato Action obj
@@ -124,9 +124,9 @@ describe("Gelato-Kyber Demo Part 1: All in one Tx: Create proxy, do setup and su
       addr: actionKyberTradeAddress,
       data: await actionKyberTrade.getActionData(
         myUserAddress, // origin
-        DAI, // sendToken
-        DAI_AMOUNT_PER_TRADE, // sendAmount (1 DAI)
-        KNC, // receiveToken
+        KNC, // sendToken
+        KNC_AMOUNT_PER_TRADE, // sendAmount (1 KNC)
+        ETH, // receiveToken
         myUserAddress // receiver
       ),
       operation: Operation.Delegatecall, // This Action must be executed via the UserProxy
@@ -215,50 +215,50 @@ describe("Gelato-Kyber Demo Part 1: All in one Tx: Create proxy, do setup and su
     ) {
       // We also want to keep track of token balances in our UserWallet
       const myUserWalletDAIBalance = await bre.run("erc20-balance", {
-        erc20name: "DAI",
+        erc20name: "KNC",
         owner: myUserAddress,
       });
 
-      // Since our Proxy will move a total of 3 DAI from our UserWallet to
-      // trade them for KNC and pay the Provider fee, we need to make sure the we
-      // have the DAI balance
+      // Since our Proxy will move a total of 3 KNC from our UserWallet to
+      // trade them for ETH and pay the Provider fee, we need to make sure the we
+      // have the KNC balance
       if (!myUserWalletDAIBalance.gte(3)) {
         console.log(
-          "\n ❌ Ooops! You need at least 3 DAI in your UserWallet \n"
+          "\n ❌ Ooops! You need at least 3 KNC in your UserWallet \n"
         );
         process.exit(1);
       }
 
-      // We also monitor the DAI approval our GelatoUserProxy has from us
+      // We also monitor the KNC approval our GelatoUserProxy has from us
       const myUserProxyDAIAllowance = await bre.run("erc20-allowance", {
         owner: myUserAddress,
-        erc20name: "DAI",
+        erc20name: "KNC",
         spender: myUserProxyAddress,
       });
 
-      // Since our Proxy will move a total of 3 DAI from our UserWallet to
-      // trade them for KNC and pay the Provider fee, we need to make sure the we
+      // Since our Proxy will move a total of 3 KNC from our UserWallet to
+      // trade them for ETH and pay the Provider fee, we need to make sure the we
       // that we have approved our UserProxy. We can already approve it before
       // we have even deployed it, due to create2 address prediction magic.
       if (!myUserProxyDAIAllowance.gte(utils.parseUnits("3", 18))) {
         try {
-          console.log("\n Sending Transaction to approve UserProxy for DAI.");
-          console.log("\n Waiting for DAI Approval Tx to be mined....");
+          console.log("\n Sending Transaction to approve UserProxy for KNC.");
+          console.log("\n Waiting for KNC Approval Tx to be mined....");
           await bre.run("erc20-approve", {
-            erc20name: "DAI",
+            erc20name: "KNC",
             amount: utils.parseUnits("3", 18).toString(),
             spender: myUserProxyAddress,
           });
           console.log(
-            "\n Gelato User Proxy now has your Approval to move 3 DAI  ✅ \n"
+            "\n Gelato User Proxy now has your Approval to move 3 KNC  ✅ \n"
           );
         } catch (error) {
-          console.error("\n UserProxy DAI Approval failed ❌  \n", error);
+          console.error("\n UserProxy KNC Approval failed ❌  \n", error);
           process.exit(1);
         }
       } else {
         console.log(
-          "\n Gelato User Proxy already has your Approval to move 3 DAI  ✅ \n"
+          "\n Gelato User Proxy already has your Approval to move 3 KNC  ✅ \n"
         );
       }
 
