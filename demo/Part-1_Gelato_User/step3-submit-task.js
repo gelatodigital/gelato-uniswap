@@ -22,7 +22,7 @@ describe("Gelato-Kyber Demo Part 1: Step 3", function () {
 
   const KNC = bre.network.config.addressBook.erc20.KNC;
   const ETH = bre.network.config.addressBook.kyber.ETH;
-  const DAI_AMOUNT_PER_TRADE = utils.parseUnits("1", 18);
+  const KNC_AMOUNT_PER_TRADE = utils.parseUnits("1", 18);
 
   // 3) We use the already deployed instance of ActionKyberTrade
   const actionKyberTradeAddress =
@@ -129,7 +129,7 @@ describe("Gelato-Kyber Demo Part 1: Step 3", function () {
       data: await actionKyberTrade.getActionData(
         myUserAddress, // origin
         KNC, // sendToken
-        DAI_AMOUNT_PER_TRADE, // sendAmount (1 KNC)
+        KNC_AMOUNT_PER_TRADE, // sendAmount (1 KNC)
         ETH, // receiveToken
         myUserAddress // receiver
       ),
