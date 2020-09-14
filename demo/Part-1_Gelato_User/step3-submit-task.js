@@ -157,7 +157,7 @@ describe("Gelato-Kyber Demo Part 1: Step 3", function () {
       // These Actions have to be executed in the same TX all-or-nothing
       actions: [actionTradeKyber, actionUpdateConditionTime],
       selfProviderGasLimit: estimatedGasPerExecution, // We only want this execution to at most consume a gasLimit of "estimatedGasPerExecution"
-      selfProviderGasLimit: 0, // We want to execute this transaction no matter the current gasPrice
+      selfProviderGasPriceCeil: 0, // We want to execute this transaction no matter the current gasPrice
     });
   });
 
