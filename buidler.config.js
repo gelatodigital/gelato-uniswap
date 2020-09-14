@@ -47,7 +47,7 @@ module.exports = {
         // Rinkeby: Kyber
         kyber: {
           ETH: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-          networkProxy: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76",
+          networkProxy: "0x0d5371e5EE23dec7DF251A8957279629aa79E9C5",
         },
       },
 
@@ -72,7 +72,7 @@ module.exports = {
       deployments: {
         // ==== Actions ====
         // Kyber
-        ActionKyberTrade: "0xe2B2f27D674F49fB3d67D6D21F5d85EFe2B95635",
+        ActionKyberTrade: "0x605e0d68996a110E516271884bdc93a574eBD89a",
         // Transfer
         ActionTransfer: "0x783bD05d52B02811dECC8960aBF38A56c9Fb5F9B",
         // Provider
