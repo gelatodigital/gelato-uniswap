@@ -10,11 +10,11 @@ let myProviderAddress;
 
 // We also want to keep track of token balances in our UserWallet
 let myUserWalletETHBalance;
-let myUserWalletKNCBalance;
+let myUserWalletDAIBalance;
 
 async function logBalances() {
   try {
-    // const KNC = bre.network.config.addressBook.erc20.KNC;
+    // const DAI = bre.network.config.addressBook.erc20.DAI;
     const CREATE_2_SALT = 42069; // for create2 and address prediction
 
     // We get our User Wallet from the Buidler Runtime Env
@@ -33,34 +33,34 @@ async function logBalances() {
 
     // We also want to keep track of token balances in our UserWallet
     myUserWalletETHBalance = await myUserWallet.getBalance();
-    myUserWalletKNCBalance = await bre.run("erc20-balance", {
-      erc20name: "KNC",
+    myUserWalletDAIBalance = await bre.run("erc20-balance", {
+      erc20name: "DAI",
       owner: myUserAddress,
     });
 
-    // We also monitor the KNC approval our GelatoUserProxy has from us
-    const myUserProxyKNCAllowance = await bre.run("erc20-allowance", {
+    // We also monitor the DAI approval our GelatoUserProxy has from us
+    const myUserProxyDAIAllowance = await bre.run("erc20-allowance", {
       owner: myUserAddress,
-      erc20name: "KNC",
+      erc20name: "DAI",
       spender: myUserProxyAddress,
     });
 
     const formatMyUserWalletETHBalance = utils
       .formatEther(myUserWalletETHBalance)
       .toString();
-    const formatMyUserWalletKNCBalance = utils
-      .formatEther(myUserWalletKNCBalance)
+    const formatMyUserWalletDAIBalance = utils
+      .formatEther(myUserWalletDAIBalance)
       .toString();
-    const formatMyUserWalletKNCAllowance = utils
-      .formatEther(myUserProxyKNCAllowance)
+    const formatMyUserWalletDAIAllowance = utils
+      .formatEther(myUserProxyDAIAllowance)
       .toString();
 
     const status = balanceChangeCounter > 0 ? "NEW" : "Current";
     console.log(
       `\n ___💰 ${status} Token BALANCES! ____💰
         \n myUserWallet ETH Balance: ${formatMyUserWalletETHBalance} ETH\n
-        \n myUserWallet KNC Balance:   ${formatMyUserWalletKNCBalance} KNC\n
-        \n myUserWallet KNC Allowance:   ${formatMyUserWalletKNCAllowance} KNC\n
+        \n myUserWallet DAI Balance:   ${formatMyUserWalletDAIBalance} DAI\n
+        \n myUserWallet DAI Allowance:   ${formatMyUserWalletDAIAllowance} DAI\n
         `
     );
     if (balanceChangeCounter == 3) {
@@ -84,17 +84,17 @@ async function monitorBalancesAndLogChange() {
       ? false
       : true;
 
-    const userWalletKNCBalance = await bre.run("erc20-balance", {
-      erc20name: "KNC",
+    const userWalletDAIBalance = await bre.run("erc20-balance", {
+      erc20name: "DAI",
       owner: myUserAddress,
     });
-    const userWalletKNCBalanceChanged = userWalletKNCBalance.eq(
-      myUserWalletKNCBalance
+    const userWalletDAIBalanceChanged = userWalletDAIBalance.eq(
+      myUserWalletDAIBalance
     )
       ? false
       : true;
 
-    if (userWalletETHBalanceChanged || userWalletKNCBalanceChanged) {
+    if (userWalletETHBalanceChanged || userWalletDAIBalanceChanged) {
       balanceChangeCounter++;
       await logBalances();
     }

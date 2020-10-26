@@ -37,6 +37,8 @@ module.exports = {
           "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa": "DAI",
           KNC: "0x6FA355a7b6bD2D6bD8b927C489221BFBb6f1D7B2",
           "0x6FA355a7b6bD2D6bD8b927C489221BFBb6f1D7B2": "KNC",
+          WETH: "0xc778417e063141139fce010982780140aa0cd5ab",
+          "0xc778417e063141139fce010982780140aa0cd5ab": "WETH",
         },
 
         // Rinkeby: Gelato
@@ -48,6 +50,10 @@ module.exports = {
         kyber: {
           ETH: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
           networkProxy: "0x0d5371e5EE23dec7DF251A8957279629aa79E9C5",
+        },
+        uniswapV2: {
+          router2: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+          factory: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         },
       },
 
