@@ -121,11 +121,7 @@ describe("Gelato-Uniswap Demo Part 1: Step 3", function () {
       data: await bre.run("abi-encode-withselector", {
         contractname: "IERC20",
         functionname: "transferFrom",
-        inputs: [
-          myUserAddress,
-          myUserProxyAddress,
-          DAI_AMOUNT_PER_TRADE.mul(NUM_OF_TRADES),
-        ],
+        inputs: [myUserAddress, myUserProxyAddress, DAI_AMOUNT_PER_TRADE],
       }),
       operation: Operation.Call, // This Action must be executed via the UserProxy
     });
@@ -135,7 +131,7 @@ describe("Gelato-Uniswap Demo Part 1: Step 3", function () {
       data: await bre.run("abi-encode-withselector", {
         contractname: "IERC20",
         functionname: "approve",
-        inputs: [UNISWAP_V2_Router_02, DAI_AMOUNT_PER_TRADE.mul(NUM_OF_TRADES)],
+        inputs: [UNISWAP_V2_Router_02, DAI_AMOUNT_PER_TRADE],
       }),
       operation: Operation.Call, // This Action must be executed via the UserProxy
     });
@@ -153,13 +149,7 @@ describe("Gelato-Uniswap Demo Part 1: Step 3", function () {
       data: await bre.run("abi-encode-withselector", {
         contractname: "IUniswapV2Router02",
         functionname: "swapExactTokensForTokens",
-        inputs: [
-          DAI_AMOUNT_PER_TRADE.mul(NUM_OF_TRADES),
-          0,
-          tokenPath,
-          myUserAddress,
-          4102448461,
-        ],
+        inputs: [DAI_AMOUNT_PER_TRADE, 0, tokenPath, myUserAddress, 4102448461],
       }),
       operation: Operation.Call, // This Action must be executed via the UserProxy
     });
