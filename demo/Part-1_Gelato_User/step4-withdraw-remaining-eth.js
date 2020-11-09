@@ -9,7 +9,7 @@ import { expect } from "chai";
 import bre from "@nomiclabs/buidler";
 import DataFlow from "../../src/enums/gelato/DataFlow";
 
-describe("Gelato-Kyber Demo Part 1: Step 4", function () {
+describe("Gelato-Uniswap Demo Part 1: Step 4", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 

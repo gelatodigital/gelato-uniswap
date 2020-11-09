@@ -78,7 +78,7 @@ The faucet asks you to make a social media post with the `account` `address` (as
 After having ETH in your User Wallet, run this script to get some Rinkeby DAI:
 
 ```
-yarn get-knc
+yarn get-dai
 ```
 
 If you're stuck here, feel free to reach out to us in our [Telegram](https://t.me/joinchat/HcTaOxJ0_FjU-r34vbvK8A), we are more than happy to send you some ETH & DAI ourselves.
@@ -132,9 +132,9 @@ The following scripts will be using your `DEMO_USER_PK` as a `Wallet`. Make sure
 
 ### Step 1: Create a smart contract wallet
 
-In order for a User to schedule trades on Kyber using Gelato, the User needs a smart contract wallet (proxy contract), through which he will interact with the Gelato Protocol. You can think of Gelato simply being a module that can be integrated into any smart contract, including smart contract wallets (e.g. Gnosis Safe, dsProxy, etc.), enabling these contracts to execute transactions at some point in the future, when a pre-specified condition, such as the time being a day from now, is met.
+In order for a User to schedule trades on Uniswap using Gelato, the User needs a smart contract wallet (proxy contract), through which he will interact with the Gelato Protocol. You can think of Gelato simply being a module that can be integrated into any smart contract, including smart contract wallets (e.g. Gnosis Safe, dsProxy, etc.), enabling these contracts to execute transactions at some point in the future, when a pre-specified condition, such as the time being a day from now, is met.
 
-For this demo your Users will be using a [`GelatoUserProxy`](https://github.com/gelatodigital/gelato-kyber/blob/master/contracts/user_proxies/GelatoUserProxy.sol) as a smart contract wallet, for simplicity. Theoretically, they could use any Smart Contract Proxy, such as a `GnosisSafe` or `Maker`'s `DSProxy`.
+For this demo your Users will be using a [`GelatoUserProxy`](https://github.com/gelatodigital/gelato-uniswap/blob/master/contracts/user_proxies/GelatoUserProxy.sol) as a smart contract wallet, for simplicity. Theoretically, they could use any Smart Contract Proxy, such as a `GnosisSafe` or `Maker`'s `DSProxy`.
 
 Run this to create a `GelatoUserProxy` for the User:
 
@@ -144,7 +144,7 @@ yarn create-userproxy
 
 This script executes the following code:
 
-[`demo/Part-1_Gelato_User/step1-create-user-proxy.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-1_Gelato_User/step1-create-user-proxy.js)
+[`demo/Part-1_Gelato_User/step1-create-user-proxy.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-1_Gelato_User/step1-create-user-proxy.js)
 
 ### Step 2: Deposit some ETH on gelato, select the gelato executor network and tell gelato what kind of proxy the user has
 
@@ -162,7 +162,7 @@ To accomplish the above, run the following script:
 yarn userproxy-setup
 ```
 
-[`demo/Part-1_Gelato_User/step2-user-proxy-setup.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-1_Gelato_User/step2-user-proxy-setup.js)
+[`demo/Part-1_Gelato_User/step2-user-proxy-setup.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-1_Gelato_User/step2-user-proxy-setup.js)
 
 ### Step 3: User submits a Task to Gelato via the deployed smart contract wallet
 
@@ -170,15 +170,15 @@ In this example, the User wants to instruct Gelato to execute 3 trades in total 
 
 A `Gelato Task` is just the combination of `Conditions` (when to execute a transaction) and `Actions` (what the transaction should execute).
 
-For this demo we will combine a single `Condition`, being tracking the time, with a single `Action`, being executing a trade on kyber. However, it is also possible to combine several `Conditions` with several `Actions` into one `Task`.
+For this demo we will combine a single `Condition`, being tracking the time, with a single `Action`, being executing a trade on uniswap. However, it is also possible to combine several `Conditions` with several `Actions` into one `Task`.
 
 Here, we define our `Task` like so:
 
 - `Condition`: **Every 2 minutes** (or every time a certain timestamp has been reached on Ethereum)
 
-- `Action`: **Trade 1 DAI for WETH on Uniswap** (call the trade function on the kyber network smart contract)
+- `Action`: **Trade 1 DAI for WETH on Uniswap** (call the trade function on the uniswap smart contract)
 
-- `Task`: **Every 2 minutes, trade 1 DAI for ETH on KyberNetwork**
+- `Task`: **Every 2 minutes, trade 1 DAI for ETH on Uniswap**
 
 Conditions are smart contracts checked by the GelatoCore smart contract and determine if a task can be executed in a given block or not.
 
@@ -187,7 +187,7 @@ Actions are other smart contracts that contain some logic that will be checked o
 If you are a curious Solidity developer, you can check out their code here:
 
 **Condition:**
-[`contracts/gelato_conditions/ConditionTimeStateful.sol`](https://github.com/gelatodigital/gelato-kyber/blob/master/contracts/gelato_conditions/ConditionTimeStateful.sol)
+[`contracts/gelato_conditions/ConditionTimeStateful.sol`](https://github.com/gelatodigital/gelato-uniswap/blob/master/contracts/gelato_conditions/ConditionTimeStateful.sol)
 
 **Action:**
 [`Uniswap V2 Router 2](https://etherscan.io/address/0x7a250d5630b4cf539739df2c5dacb4c659f2488d)
@@ -196,9 +196,9 @@ In this example, the User is setting a limit of 3 executions, User's could poten
 
 The following script sends 2 transactions:
 
-1. `Approving` the User's `GelatoUserProxy` to move `3 DAI` from the UserWallet if the conditions are fulfilled. This means that the DAI will remain in the Users Wallet until the condition returns "OK" and the User's proxy withdraws them out in order to trade on Kyber.
+1. `Approving` the User's `GelatoUserProxy` to move `3 DAI` from the UserWallet if the conditions are fulfilled. This means that the DAI will remain in the Users Wallet until the condition returns "OK" and the User's proxy withdraws them out in order to trade on Uniswap.
 
-2. `Submitting the task` to `GelatoCore.sol`, which defines that we want to trade on Kyber every 2 mintues STARTING NOW.
+2. `Submitting the task` to `GelatoCore.sol`, which defines that we want to trade on Uniswap every 2 mintues STARTING NOW.
 
 If you want to, you can also watch your `USER` account balances for `DAI` and `WETH` on Metmask or Etherscan.
 Remember, all of this is on Rinkeby. So if you use Metamask, you need to add these Custom Tokens to your GUI, to check out your balances there.
@@ -217,7 +217,7 @@ yarn submit-task-uniswap-self-provider-and-monitor
 
 If you are interested in the code that was run, take a peek at this script:
 
-[`demo/Part-1_Gelato_User/step3-submit-task-uniswap.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-1_Gelato_User/step3-submit-task-uniswap.js)
+[`demo/Part-1_Gelato_User/step3-submit-task-uniswap.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-1_Gelato_User/step3-submit-task-uniswap.js)
 
 It's time to grab a coffee ☕and watch your trades be executed by gelato while you sit back and relax. In order to visualize your token balances changing, check out the logs in your console, changing token balances in Metamask or your account on Etherscan Rinkeby.
 
@@ -237,7 +237,7 @@ yarn withdraw-remaining-eth
 
 If you are interested in the code that was run, take a peek at this script:
 
-[`demo/Part-1_Gelato_User/step4-withdraw-remaining-eth.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-1_Gelato_User/step4-withdraw-remaining-eth.js)
+[`demo/Part-1_Gelato_User/step4-withdraw-remaining-eth.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-1_Gelato_User/step4-withdraw-remaining-eth.js)
 
 ### Congrats, you finished Demo Part 1!
 
@@ -271,7 +271,7 @@ yarn assign-executor
 
 You can check out the script here:
 
-[`demo/Part-2_Gelato_Provider/step1-assign-executor.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-2_Gelato_Provider/step1-assign-executor.js)
+[`demo/Part-2_Gelato_Provider/step1-assign-executor.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-2_Gelato_Provider/step1-assign-executor.js)
 
 ### Step 2: Deposit Funds on Gelato
 
@@ -287,7 +287,7 @@ yarn provide-funds
 
 You can check out the script here:
 
-[`demo/Part-2_Gelato_Provider/step2-provide-funds.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-2_Gelato_Provider/step2-provide-funds.js)
+[`demo/Part-2_Gelato_Provider/step2-provide-funds.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-2_Gelato_Provider/step2-provide-funds.js)
 
 ### Step 3: Whitelist the Task Spec
 
@@ -297,7 +297,7 @@ The answer is no, as Users can only execute certain Tasks and have their selecte
 
 Providers must list the type of `Tasks` that they pay `Exectuors` for. As a `Provider` you want to make sure that your Users can only submit the type of `Task` that you have preapproved, so that you, for example, make sure that the `Task` has a fee mechanism encoded into it. This blueprint of a `Task`, which we will whitelist in the next script, is called a `TaskSpec`.
 
-Whitelist the **Kyber Automated Trading TaskSpec** from Demo Part 1, by running this:
+Whitelist the **Uniswap Automated Trading TaskSpec** from Demo Part 1, by running this:
 
 ```
 yarn whitelist-task
@@ -305,7 +305,7 @@ yarn whitelist-task
 
 You can check out the script here:
 
-[`demo/Part-2_Gelato_Provider/step3-whitelist-task.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-2_Gelato_Provider/step3-whitelist-task.js)
+[`demo/Part-2_Gelato_Provider/step3-whitelist-task.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-2_Gelato_Provider/step3-whitelist-task.js)
 
 ### Step 4: Tell gelato what kind of smart contracts can use the Provider
 
@@ -327,7 +327,7 @@ yarn add-provider-module
 
 You can check out the script here:
 
-[`demo/Part-2_Gelato_Provider/step4-add-provider-module.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-2_Gelato_Provider/step4-add-provider-module.js)
+[`demo/Part-2_Gelato_Provider/step4-add-provider-module.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-2_Gelato_Provider/step4-add-provider-module.js)
 
 ### Step 5: Let the User submit the same Task to gelato, just this time, the Provider pays for the execution
 
@@ -339,7 +339,7 @@ yarn submit-task-external-provider-and-monitor
 
 You can check out the script here:
 
-[`demo/Part-2_Gelato_Provider/step5-submit-task.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-2_Gelato_Provider/step5-submit-task.js)
+[`demo/Part-2_Gelato_Provider/step5-submit-task.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-2_Gelato_Provider/step5-submit-task.js)
 
 What will happen now?
 
@@ -361,7 +361,7 @@ yarn batch-provide
 
 If you are interested in the code, take a peek at this script:
 
-[`demo/Part-1_Gelato_Providers/batch-provide.js`](https://github.com/gelatodigital/gelato-kyber/blob/master/demo/Part-1_Gelato_Providers/batch-provide.js)
+[`demo/Part-1_Gelato_Providers/batch-provide.js`](https://github.com/gelatodigital/gelato-uniswap/blob/master/demo/Part-1_Gelato_Providers/batch-provide.js)
 
 ### Congrats, you finished Demo Part 2!
 

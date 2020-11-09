@@ -30,7 +30,7 @@ describe("Gelato-Uniswap Demo Part 1: Step 3", function () {
   const defaultExecutor = bre.network.config.addressBook.gelatoExecutor.default;
   const TWO_MINUTES = 120; // seconds
 
-  const estimatedGasPerExecution = ethers.utils.bigNumberify("700000"); // Limits the required balance of the User on Gelato to be 500.000 * GelatoGasPrice for every execution and not the default 8M
+  const estimatedGasPerExecution = ethers.utils.bigNumberify("700000"); // Limits the required balance of the User on Gelato to be 700.000 * GelatoGasPrice for every execution and not the default 8M
 
   // We use our User Wallet. Per our config this wallet is at the accounts index 0
   // and hence will be used by default for all transactions we send.

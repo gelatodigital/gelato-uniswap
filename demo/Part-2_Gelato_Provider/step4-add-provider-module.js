@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 2: Step 4", function () {
+describe("Gelato-Uniswap Demo Part 2: Step 4", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 

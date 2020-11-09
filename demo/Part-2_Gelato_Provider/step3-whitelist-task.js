@@ -7,14 +7,19 @@ import { expect } from "chai";
 // When running the script with `buidler run <script>` you'll find the Buidler
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
+import { constants } from "ethers";
 
-describe("Gelato-Kyber Demo Part 2: Step 3", function () {
+describe("Gelato-Uniswap Demo Part 2: Step 3", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
   // We use our Provider Wallet
   let myProviderAddress;
   let myProviderWallet;
+
+  const DAI = bre.network.config.addressBook.erc20.DAI;
+  const WETH = bre.network.config.addressBook.erc20.WETH;
+  const UNISWAP_V2_Router_02 = bre.network.config.addressBook.uniswapV2.router2;
 
   // We will send a Transaction to GelatoCore on Rinkeby
   const gelatoCoreAddress = bre.network.config.deployments.GelatoCore;
@@ -24,43 +29,50 @@ describe("Gelato-Kyber Demo Part 2: Step 3", function () {
   // 1) We use the already deployed instance of ConditionTimeStateful
   const conditionTimeStatefulAddress =
     bre.network.config.deployments.ConditionTimeStateful;
-  // 2) We use the already deployed instance of ActionKyberTrade
-  const actionKyberTradeAddress =
-    bre.network.config.deployments.ActionKyberTrade;
 
-  // --> Step 4: Whitelist Tasks
-  // For this we create a specific Gelato object called a TaskSpec
-  // The TaskSpec only needs the address of the Condition, but we need to provide
-  /// more information about the Actions:
-
-  // Action that automatically trades for our Users on Kyber
-  const kyberAction = new Action({
-    addr: actionKyberTradeAddress, // The address of the contract with the Action logic
-    data: constants.HashZero, // The exact Action payload is ignored for whitelisting
-    operation: Operation.Delegatecall, // This Action must be executed via the UserProxy
-    dataFlow: DataFlow.None, // Only relevant if another actions wants to channel data into this one
-    termsOkCheck: true, // Some sanity checks have to pass before Execution is granted
-    value: 0,
-  });
-  // We also need to chain a third Action that updates ConditionTimeStateful
-  const updateConditionTimeAction = new Action({
-    addr: conditionTimeStatefulAddress,
-    data: constants.HashZero, // The exact Action payload is ignored for whitelisting
+    // 2) We instantiate the Actions objects that belong to the Task
+  const actionTransferFrom = new Action({
+    addr: DAI,
+    data: constants.HashZero,
     operation: Operation.Call, // This Action must be executed via the UserProxy
-    dataFlow: DataFlow.None, // Only relevant if another actions wants to channel data into this one
-    termsOkCheck: false, // Some sanity checks have to pass before Execution is granted
-    value: 0,
   });
 
+  const actionApproveUniswapRouter = new Action({
+    addr: DAI,
+    data: constants.HashZero,
+    operation: Operation.Call, // This Action must be executed via the UserProxy
+  });
+
+  const tokenPath = [DAI, WETH];
+  console.log(tokenPath);
+
+  const actionSwapTokensUniswap = new Action({
+    addr: UNISWAP_V2_Router_02,
+    data: constants.HashZero,
+    operation: Operation.Call, // This Action must be executed via the UserProxy
+  });
+
+    //  2.2a) We instantiate the Action obj that updates the ConditionTimeStateful
+    //   with the time of the last automated trade.
+  const actionUpdateConditionTime = new Action({
+    addr: conditionTimeStatefulAddress,
+    data: constants.HashZero,
+    operation: Operation.Call, // This Action must be called from the UserProxy
+  });
   // We also need to specify up to which gasPrice the Action should be executable
   const gasPriceCeil = constants.MaxUint256;
 
   // This is all the info we need for the TaskSpec whitelisting
-  const gelatoKyberTaskSpec = new TaskSpec({
+  const gelatoUniswapTaskSpec = new TaskSpec({
     // All the conditions have to be met
     conditions: [conditionTimeStatefulAddress],
     // These Actions have to be executed in the same TX all-or-nothing
-    actions: [kyberAction, updateConditionTimeAction],
+    actions: [
+      actionTransferFrom,
+      actionApproveUniswapRouter,
+      actionSwapTokensUniswap,
+      actionUpdateConditionTime,
+    ],    
     gasPriceCeil,
   });
 
@@ -82,14 +94,14 @@ describe("Gelato-Kyber Demo Part 2: Step 3", function () {
     const taskSpecIsNotProvided =
       (await gelatoCore.isTaskSpecProvided(
         myProviderAddress,
-        gelatoKyberTaskSpec
+        gelatoUniswapTaskSpec
       )) === "TaskSpecNotProvided"
         ? true
         : false;
 
     const currentGasPriceCeil = await gelatoCore.taskSpecGasPriceCeil(
       myProviderAddress,
-      await gelatoCore.hashTaskSpec(gelatoKyberTaskSpec)
+      await gelatoCore.hashTaskSpec(gelatoUniswapTaskSpec)
     );
 
     // Transaction
@@ -97,7 +109,7 @@ describe("Gelato-Kyber Demo Part 2: Step 3", function () {
       let provideTaskSpec;
       try {
         provideTaskSpec = await gelatoCore.provideTaskSpecs(
-          [gelatoKyberTaskSpec],
+          [gelatoUniswapTaskSpec],
           {
             gasLimit: 6000000,
             gasPrice: utils.parseUnits("10", "gwei"),
@@ -123,14 +135,14 @@ describe("Gelato-Kyber Demo Part 2: Step 3", function () {
     expect(
       await gelatoCore.isTaskSpecProvided(
         myProviderAddress,
-        gelatoKyberTaskSpec
+        gelatoUniswapTaskSpec
       )
     ).to.be.equal("OK");
 
     expect(
       await gelatoCore.taskSpecGasPriceCeil(
         myProviderAddress,
-        await gelatoCore.hashTaskSpec(gelatoKyberTaskSpec)
+        await gelatoCore.hashTaskSpec(gelatoUniswapTaskSpec)
       )
     ).to.be.equal(gasPriceCeil);
   });

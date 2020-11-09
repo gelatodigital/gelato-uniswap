@@ -8,7 +8,7 @@ import { expect } from "chai";
 // Runtime Environment's members available in the global scope.
 import bre from "@nomiclabs/buidler";
 
-describe("Gelato-Kyber Demo Part 2: Step 5", function () {
+describe("Gelato-Uniswap Demo Part 2: Step 5", function () {
   // No timeout for Mocha due to Rinkeby mining latency
   this.timeout(0);
 
@@ -20,19 +20,17 @@ describe("Gelato-Kyber Demo Part 2: Step 5", function () {
   const conditionTimeStatefulAddress =
     bre.network.config.deployments.ConditionTimeStateful;
 
-  const KNC = bre.network.config.addressBook.erc20.KNC;
-  const KNC_AMOUNT_PER_TRADE = utils.parseUnits("1", 18);
-  const ETH = bre.network.config.addressBook.kyber.ETH;
-
-  // 3) We use the already deployed instance of ActionKyberTrade
-  const actionKyberTradeAddress =
-    bre.network.config.deployments.ActionKyberTrade;
+  const DAI = bre.network.config.addressBook.erc20.DAI;
+  const WETH = bre.network.config.addressBook.erc20.WETH;
+  const UNISWAP_V2_Router_02 = bre.network.config.addressBook.uniswapV2.router2;
+  const UNISWAP_V2_FACTORY = bre.network.config.addressBook.uniswapV2.factory;
+  const DAI_AMOUNT_PER_TRADE = utils.parseUnits("1", 18);
+  const NUM_OF_TRADES = ethers.utils.bigNumberify("3");
 
   const defaultExecutor = bre.network.config.addressBook.gelatoExecutor.default;
-
   const TWO_MINUTES = 120; // seconds
 
-  const estimatedGasPerExecution = ethers.utils.bigNumberify("500000"); // Limits the required balance of the User on Gelato to be 500.000 * GelatoGasPrice for every execution and not the default 8M
+  const estimatedGasPerExecution = ethers.utils.bigNumberify("700000");
 
   // We use our User Wallet. Per our config this wallet is at the accounts index 0
   // and hence will be used by default for all transactions we send.
@@ -56,14 +54,11 @@ describe("Gelato-Kyber Demo Part 2: Step 5", function () {
   let conditionTimeStateful; // contract instance
   let conditionEvery2minutes; // gelato Condition obj
 
-  let actionKyberTrade; // contract instance
-  let actionTradeKyber; // gelato Action obj
-
   // 4) The last Action updates the ConditionTimeStateful with the time of the last trade
   let actionUpdateConditionTime; // gelato Action obj
 
   // All these variables and constants will be used to create our Gelato Task object:
-  let taskTradeOnKyber;
+  let taskTradeOnUniswap;
 
   // Current Gelato Gas Price
   let currentGelatoGasPrice;
@@ -126,67 +121,85 @@ describe("Gelato-Kyber Demo Part 2: Step 5", function () {
     });
 
     // 2) We instantiate the Actions objects that belong to the Task
-
-    //  2.1a) We instantiate ActionKyberTrade contract to get the Data for the Action
-    actionKyberTrade = await ethers.getContractAt(
-      "ActionKyberTrade",
-      actionKyberTradeAddress
-    );
-    //  2.1b) We instantiate the ActionKyberTrade obj
-    actionTradeKyber = new Action({
-      addr: actionKyberTradeAddress,
-      data: await actionKyberTrade.getActionData(
-        myUserAddress, // origin
-        KNC, // sendToken
-        KNC_AMOUNT_PER_TRADE, // sendAmount (1 KNC)
-        ETH, // receiveToken
-        myUserAddress // receiver
-      ),
-      operation: Operation.Delegatecall, // This Action must be executed via the UserProxy
-      dataFlow: DataFlow.None, // Only releveant if data is being channeled into this action by a previous one
-      termsOkCheck: true, // Some sanity checks have to pass before Execution is granted
-      value: 0,
+    const actionTransferFrom = new Action({
+        addr: DAI,
+        data: await bre.run("abi-encode-withselector", {
+          contractname: "IERC20",
+          functionname: "transferFrom",
+          inputs: [myUserAddress, myUserProxyAddress, DAI_AMOUNT_PER_TRADE],
+        }),
+        operation: Operation.Call, // This Action must be executed via the UserProxy
     });
-
-    //  2.2a) We instantiate the Action obj that updates the ConditionTimeStateful
-    //   with the time of the last automated trade.
-    actionUpdateConditionTime = new Action({
-      addr: conditionTimeStatefulAddress,
-      data: await bre.run("abi-encode-withselector", {
-        contractname: "ConditionTimeStateful",
-        functionname: "setRefTime",
-        inputs: [TWO_MINUTES /* _timeDelta */, 0],
-      }),
-      operation: Operation.Call, // This Action must be called from the UserProxy
-      dataFlow: DataFlow.None, // Only releveant if data is being channeled into this action by a previous one
-      termsOkCheck: false,
-      value: 0,
+  
+    const actionApproveUniswapRouter = new Action({
+        addr: DAI,
+        data: await bre.run("abi-encode-withselector", {
+          contractname: "IERC20",
+          functionname: "approve",
+          inputs: [UNISWAP_V2_Router_02, DAI_AMOUNT_PER_TRADE],
+        }),
+        operation: Operation.Call, // This Action must be executed via the UserProxy
     });
-
-    // This is all the info we need to submit this task to Gelato
-    taskTradeOnKyber = new Task({
-      // All the conditions have to be met
-      conditions: [conditionEvery2minutes],
-      // These Actions have to be executed in the same TX all-or-nothing
-      actions: [actionTradeKyber, actionUpdateConditionTime],
-    });
+  
+      // const uniswapFactory  = await ethers.getContractAt(
+      //   "IUniswapV2Factory",
+      //   UNISWAP_V2_FACTORY
+      // );
+  
+      const tokenPath = [DAI, WETH];
+      console.log(tokenPath);
+  
+      const actionSwapTokensUniswap = new Action({
+        addr: UNISWAP_V2_Router_02,
+        data: await bre.run("abi-encode-withselector", {
+          contractname: "IUniswapV2Router02",
+          functionname: "swapExactTokensForTokens",
+          inputs: [DAI_AMOUNT_PER_TRADE, 0, tokenPath, myUserAddress, 4102448461],
+        }),
+        operation: Operation.Call, // This Action must be executed via the UserProxy
+      });
+  
+      //  2.2a) We instantiate the Action obj that updates the ConditionTimeStateful
+      //   with the time of the last automated trade.
+      actionUpdateConditionTime = new Action({
+        addr: conditionTimeStatefulAddress,
+        data: await bre.run("abi-encode-withselector", {
+          contractname: "ConditionTimeStateful",
+          functionname: "setRefTime",
+          inputs: [TWO_MINUTES /* _timeDelta */, 0],
+        }),
+        operation: Operation.Call, // This Action must be called from the UserProxy
+      });
+  
+      // This is all the info we need to submit this task to Gelato
+      taskTradeOnUniswap = new Task({
+        // All the conditions have to be met
+        conditions: [conditionEvery2minutes],
+        // These Actions have to be executed in the same TX all-or-nothing
+        actions: [
+          actionTransferFrom,
+          actionApproveUniswapRouter,
+          actionSwapTokensUniswap,
+          actionUpdateConditionTime,
+        ]
+      });
   });
 
   // Submit your Task to Gelato via your GelatoUserProxy
-  it("User submits Task with Extneral Provider", async function () {
+  it("User submits Task with External Provider", async function () {
     // First we want to make sure that the Task we want to submit actually has
     // a valid Provider, so we need to ask GelatoCore some questions about the Provider.
 
     // Instantiate GelatoCore contract instance for sanity checks
     const gelatoCore = await ethers.getContractAt(
       "GelatoCore", // fetches the contract ABI from artifacts/
-      network.config.deployments.GelatoCore // the Rinkeby Address of the deployed GelatoCore
+      bre.network.config.deployments.GelatoCore // the Rinkeby Address of the deployed GelatoCore
     );
 
     // For our Task to be executable, our Provider must have sufficient funds on Gelato
     const providerIsLiquid = await gelatoCore.isProviderLiquid(
       myProviderAddress,
-      ethers.utils.bigNumberify("8000000"), // we need roughtly estimatedGasPerExecution * 3 executions as balance on gelato
+      estimatedGasPerExecution.mul(NUM_OF_TRADES), // we need roughtly estimatedGasPerExecution * 3 executions as balance on gelato
       currentGelatoGasPrice
     );
     if (!providerIsLiquid) {
@@ -212,7 +225,7 @@ describe("Gelato-Kyber Demo Part 2: Step 5", function () {
     // For the Demo, our Provider must use the deployed ProviderModuleGelatoUserProxy
     const userProxyModuleIsProvided = await gelatoCore.isModuleProvided(
       myProviderAddress,
-      network.config.deployments.ProviderModuleGelatoUserProxy
+      bre.network.config.deployments.ProviderModuleGelatoUserProxy
     );
     if (!userProxyModuleIsProvided) {
       console.log(
@@ -230,59 +243,59 @@ describe("Gelato-Kyber Demo Part 2: Step 5", function () {
     ) {
       // We also want to keep track of token balances in our UserWallet
       const myUserWalletDAIBalance = await bre.run("erc20-balance", {
-        erc20name: "KNC",
+        erc20name: "DAI",
         owner: myUserAddress,
       });
 
-      // Since our Proxy will move a total of 3 KNC from our UserWallet to
+      // Since our Proxy will move a total of 3 DAI from our UserWallet to
       // trade them for ETH and pay the Provider fee, we need to make sure the we
-      // have the KNC balance
+      // have the DAI balance
       if (!myUserWalletDAIBalance.gte(3)) {
         console.log(
-          "\n ❌ Ooops! You need at least 3 KNC in your UserWallet \n"
+          "\n ❌ Ooops! You need at least 3 DAI in your UserWallet \n"
         );
         process.exit(1);
       }
 
-      // We also monitor the KNC approval our GelatoUserProxy has from us
+      // We also monitor the DAI approval our GelatoUserProxy has from us
       const myUserProxyDAIAllowance = await bre.run("erc20-allowance", {
         owner: myUserAddress,
-        erc20name: "KNC",
+        erc20name: "DAI",
         spender: myUserProxyAddress,
       });
 
-      // ###### 1st TX => APPROVE USER PROXY TO MOVE KNC
+      // ###### 1st TX => APPROVE USER PROXY TO MOVE DAI
 
-      // Since our Proxy will move a total of 3 KNC from our UserWallet to
+      // Since our Proxy will move a total of 3 DAI from our UserWallet to
       // trade them for ETH and pay the Provider fee, we need to make sure the we
       // that we have approved our UserProxy. We can already approve it before
       // we have even deployed it, due to create2 address prediction magic.
       if (!myUserProxyDAIAllowance.gte(utils.parseUnits("3", 18))) {
         try {
-          console.log("\n Sending Transaction to approve UserProxy for KNC.");
-          console.log("\n Waiting for KNC Approval Tx to be mined....");
+          console.log("\n Sending Transaction to approve UserProxy for DAI.");
+          console.log("\n Waiting for DAI Approval Tx to be mined....");
           await bre.run("erc20-approve", {
-            erc20name: "KNC",
+            erc20name: "DAI",
             amount: utils.parseUnits("3", 18).toString(),
             spender: myUserProxyAddress,
           });
           console.log(
-            "\n Gelato User Proxy now has your Approval to move 3 KNC  ✅ \n"
+            "\n Gelato User Proxy now has your Approval to move 3 DAI  ✅ \n"
           );
         } catch (error) {
-          console.error("\n UserProxy KNC Approval failed ❌  \n", error);
+          console.error("\n UserProxy DAI Approval failed ❌  \n", error);
           process.exit(1);
         }
       } else {
         console.log(
-          "\n Gelato User Proxy already has your Approval to move 3 KNC  ✅ \n"
+          "\n Gelato User Proxy already has your Approval to move 3 DAI  ✅ \n"
         );
       }
 
       // To submit Tasks to  Gelato we need to instantiate a GelatoProvider object
       const myGelatoProvider = new GelatoProvider({
         addr: myProviderAddress, // This time, the provider is paying for the Task, hence we input the Providers address
-        module: network.config.deployments.ProviderModuleGelatoUserProxy,
+        module: bre.network.config.deployments.ProviderModuleGelatoUserProxy,
       });
 
       // We should also specify an expiryDate for our Task Cycle
@@ -299,10 +312,9 @@ describe("Gelato-Kyber Demo Part 2: Step 5", function () {
       let taskSubmissionTx;
       try {
         console.log("\n Sending Transaction to submit Task!");
-        taskSubmissionTx = await myUserProxy.execActionsAndSubmitTaskCycle(
-          [actionUpdateConditionTime], // setup the Time Condition for first trade in 2 mins
+        taskSubmissionTx = await myUserProxy.submitTaskCycle(
           myGelatoProvider,
-          [taskTradeOnKyber], // we only have one type of Task
+          [taskTradeOnUniswap], // we only have one type of Task
           expiryDate, // auto-cancel if not completed in 15 minutes from now
           3, // the num of times we want our Task to be executed: 3 times every 2 minutes
           {
